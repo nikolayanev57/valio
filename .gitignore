@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Vercel (re-link locally with `npx vercel link`, see README)
+.vercel
+
+# Node
+node_modules/
+npm-debug.log*

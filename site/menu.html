@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MenuFrame Studio — Меню, което се избира с очите</title>
+<meta name="description" content="Студио за дизайн на ресторантски менюта. Дизайн, снимки и QR дигитални менюта, които продават.">
+<link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0c0a07;
+    --panel:#110e0a;
+    --card:#0a0806;
+    --gold:#c9a961;
+    --gold-2:#e6cf95;
+    --gold-dim:#8f7440;
+    --gold-line:rgba(201,169,97,.45);
+    --gold-faint:rgba(201,169,97,.22);
+    --red:#71201a;
+    --red-2:#8c2921;
+    --cream:#f0e7d3;
+    --cream-dim:rgba(240,231,211,.62);
+    --ease:cubic-bezier(.22,.9,.28,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    font-size:16px;line-height:1.7;
+    color:var(--cream);
+    background:
+      radial-gradient(1200px 700px at 50% -10%,rgba(201,169,97,.07),transparent 60%),
+      radial-gradient(900px 600px at 90% 100%,rgba(140,41,33,.06),transparent 60%),
+      radial-gradient(1400px 900px at 50% 50%,#151109 0%,var(--black) 70%);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--gold);color:var(--black)}
+  img{max-width:100%;display:block}
+  h1,h2,h3,.serif{font-family:'Playfair Display',Georgia,serif}
+
+  /* ============ the menu-card page frame ============ */
+  .page-frame{position:fixed;inset:10px;pointer-events:none;z-index:200}
+  .page-frame::before{
+    content:"";position:absolute;inset:0;
+    border:1px solid var(--gold-line);border-radius:6px;
+  }
+  .page-frame::after{
+    content:"";position:absolute;inset:5px;
+    border:1px solid var(--gold-faint);border-radius:4px;
+  }
+  .page-frame i{position:absolute;width:26px;height:26px;border-color:var(--gold);border-style:solid;border-width:0}
+  .page-frame i:nth-child(1){top:-1px;left:-1px;border-top-width:2px;border-left-width:2px;border-top-left-radius:6px}
+  .page-frame i:nth-child(2){top:-1px;right:-1px;border-top-width:2px;border-right-width:2px;border-top-right-radius:6px}
+  .page-frame i:nth-child(3){bottom:-1px;left:-1px;border-bottom-width:2px;border-left-width:2px;border-bottom-left-radius:6px}
+  .page-frame i:nth-child(4){bottom:-1px;right:-1px;border-bottom-width:2px;border-right-width:2px;border-bottom-right-radius:6px}
+
+  .wrap{width:min(1080px,90vw);margin-inline:auto}
+
+  /* ============ reveal ============ */
+  .rv{opacity:0;transform:translateY(26px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+  .rv.in{opacity:1;transform:none}
+  .rv-d1{transition-delay:.08s}.rv-d2{transition-delay:.16s}.rv-d3{transition-delay:.24s}.rv-d4{transition-delay:.32s}
+
+  /* ============ sticky course nav ============ */
+  nav{
+    position:fixed;top:10px;left:10px;right:10px;z-index:120;
+    padding:14px 0 12px;border-radius:6px 6px 0 0;
+  }
+  nav::before{
+    content:"";position:absolute;inset:0;z-index:-1;
+    background:linear-gradient(to bottom,rgba(10,8,5,.94),rgba(10,8,5,.82));
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--gold-faint);
+    opacity:0;transition:opacity .4s ease;
+  }
+  nav.scrolled::before{opacity:1}
+  .nav-inner{
+    width:min(1080px,88vw);margin-inline:auto;
+    display:flex;align-items:center;justify-content:space-between;gap:18px;
+  }
+  .nav-brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--cream)}
+  .nav-brand .mark{
+    width:44px;height:44px;border-radius:10px;flex:none;
+    background-image:url("assets/logo.jpg");background-size:200%;background-position:50% 24%;
+    box-shadow:0 0 0 1px var(--gold-line);
+  }
+  .nav-brand b{font-size:13px;letter-spacing:.16em;font-weight:600}
+  .nav-brand b em{font-style:normal;color:var(--gold);display:block;font-size:9px;letter-spacing:.3em;line-height:1.4}
+  .courses{display:flex;gap:6px;list-style:none;align-items:center}
+  .courses a{
+    color:var(--cream-dim);text-decoration:none;
+    font-size:11.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+    padding:8px 14px;border-radius:999px;
+    transition:color .3s ease,box-shadow .3s ease;
+  }
+  .courses a:hover,.courses a:focus-visible{color:var(--gold-2);box-shadow:inset 0 0 0 1px var(--gold-faint)}
+  .courses .dot{color:var(--gold-dim);font-size:10px}
+
+  /* ============ buttons ============ */
+  .btn{
+    display:inline-flex;align-items:center;gap:12px;
+    padding:16px 30px;border-radius:999px;
+    font-size:13.5px;font-weight:600;letter-spacing:.08em;
+    text-decoration:none;cursor:pointer;border:none;white-space:nowrap;
+    transition:transform .35s var(--ease);will-change:transform;
+    font-family:'Inter',sans-serif;
+  }
+  .btn:active{transform:scale(.97)}
+  .btn-gold{
+    background:linear-gradient(135deg,#d8b86b,#a9862f 60%,#cfa958);
+    color:#191307;
+    box-shadow:0 10px 30px -10px rgba(202,166,87,.5),0 4px 12px -6px rgba(0,0,0,.6);
+  }
+  .btn-ghost{color:var(--cream);background:transparent;box-shadow:inset 0 0 0 1px var(--gold-line)}
+  .btn:hover,.btn:focus-visible{transform:translateY(-3px)}
+  .btn:focus-visible{outline:2px solid var(--gold-2);outline-offset:3px}
+  .btn svg{transition:transform .35s var(--ease)}
+  .btn:hover svg{transform:translateX(4px)}
+
+  /* ============ menu header (hero) ============ */
+  header{
+    padding:130px 0 70px;text-align:center;position:relative;
+  }
+  .crest{
+    width:86px;height:86px;border-radius:20px;margin:0 auto 18px;
+    background-image:url("assets/logo.jpg");background-size:cover;background-position:center;
+    box-shadow:0 0 0 1px var(--gold-line),0 0 0 6px rgba(10,8,5,.8),0 0 0 7px var(--gold-faint),0 24px 50px -20px rgba(0,0,0,.8);
+  }
+  .studio-line{
+    font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);
+    display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:26px;
+  }
+  .studio-line::before,.studio-line::after{content:"";width:52px;height:1px;background:var(--gold-line)}
+  h1{
+    font-size:clamp(40px,6vw,76px);font-weight:600;letter-spacing:-.01em;line-height:1.12;
+    color:var(--gold-2);
+    background:linear-gradient(115deg,#f0dca8,#c9a961 55%,#eed9a2);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    max-width:20ch;margin:0 auto;
+  }
+  .plaque{
+    display:inline-block;margin:30px auto 26px;
+    padding:12px 34px;border-radius:4px;
+    background:linear-gradient(180deg,var(--red-2),var(--red));
+    box-shadow:inset 0 0 0 1px rgba(230,207,149,.35),0 12px 30px -14px rgba(0,0,0,.8);
+    font-size:13px;font-weight:600;letter-spacing:.34em;text-transform:uppercase;color:var(--cream);
+    position:relative;
+  }
+  .plaque::before,.plaque::after{
+    content:"";position:absolute;top:50%;width:26px;height:1px;background:var(--gold-line);
+  }
+  .plaque::before{right:100%;margin-right:14px}
+  .plaque::after{left:100%;margin-left:14px}
+  .hero-tag{
+    font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(17px,2vw,21px);
+    color:var(--cream-dim);max-width:52ch;margin:0 auto 38px;
+  }
+  .hero-cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+  .hero-note{
+    margin-top:26px;font-size:12.5px;letter-spacing:.06em;color:var(--cream-dim);
+    display:flex;align-items:center;justify-content:center;gap:10px;
+  }
+
+  /* specialty flip frame */
+  .special{margin:64px auto 0;width:min(480px,88vw);position:relative}
+  .special-label{
+    display:flex;align-items:center;justify-content:center;gap:14px;
+    font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;
+  }
+  .special-label::before,.special-label::after{content:"";width:38px;height:1px;background:var(--gold-line)}
+  .flip-frame{
+    aspect-ratio:1/1;border-radius:4px;
+    background:var(--card);padding:12px;
+    box-shadow:
+      0 0 0 1px var(--gold-line),
+      0 0 0 7px var(--card),
+      0 0 0 8px var(--gold-faint),
+      0 50px 100px -40px rgba(0,0,0,.9);
+    perspective:1400px;
+    animation:floaty 9s ease-in-out infinite;
+  }
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+  .flip{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform 1.2s cubic-bezier(.45,.05,.15,1);will-change:transform}
+  .face{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:var(--card);border-radius:2px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+  .f-rear{transform:rotateX(180deg)}
+
+  /* ============ section shells ============ */
+  section{padding:90px 0;scroll-margin-top:90px}
+  .course-head{text-align:center;margin-bottom:56px}
+  .course-no{
+    font-family:'Playfair Display',serif;font-style:italic;
+    font-size:15px;color:var(--gold);letter-spacing:.08em;margin-bottom:10px;
+  }
+  .course-head h2{
+    font-size:clamp(30px,4vw,46px);font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+    background:linear-gradient(115deg,#f0dca8,#c9a961 55%,#eed9a2);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    display:inline-flex;align-items:center;gap:26px;
+  }
+  .course-head h2::before,.course-head h2::after{
+    content:"";width:64px;height:1px;background:var(--gold-line);flex:none;
+  }
+  .course-head p{color:var(--cream-dim);font-size:15.5px;max-width:56ch;margin:14px auto 0}
+  .orn{color:var(--gold-dim);font-size:15px;letter-spacing:.5em;margin-top:16px}
+
+  /* ============ portfolio: menu item cards ============ */
+  .dish-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+  .dish{
+    border-radius:4px;background:var(--card);padding:10px;cursor:zoom-in;
+    box-shadow:0 0 0 1px var(--gold-faint),0 24px 50px -28px rgba(0,0,0,.8);
+    transition:transform .55s var(--ease),box-shadow .55s var(--ease);
+    will-change:transform;
+  }
+  .dish:hover{
+    transform:translateY(-9px);
+    box-shadow:0 0 0 1px var(--gold-line),0 44px 80px -32px rgba(0,0,0,.9),0 18px 34px -18px rgba(201,169,97,.28);
+  }
+  .dish .ph{overflow:hidden;border-radius:2px;aspect-ratio:1/1;background:var(--card)}
+  .dish .ph img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
+  .dish:hover .ph img{transform:scale(1.04)}
+  .dish figcaption{
+    margin-top:10px;display:flex;align-items:center;
+    border:1px solid var(--gold-faint);border-radius:3px;
+    background:linear-gradient(180deg,rgba(201,169,97,.06),rgba(201,169,97,.02));
+    padding:12px 16px;gap:14px;
+  }
+  .dish figcaption b{
+    font-family:'Playfair Display',serif;font-weight:600;font-size:16.5px;color:var(--cream);
+    letter-spacing:.01em;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .dish figcaption span{
+    font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);
+    border-left:1px solid var(--gold-faint);padding-left:14px;white-space:nowrap;
+  }
+
+  /* ============ services: menu list ============ */
+  #uslugi .list{max-width:720px;margin-inline:auto;display:flex;flex-direction:column;gap:34px}
+  .mrow{transition:transform .45s var(--ease)}
+  .mrow:hover{transform:translateX(8px)}
+  .mrow .line{display:flex;align-items:baseline;gap:14px}
+  .mrow .line b{
+    font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(19px,2.2vw,24px);
+    color:var(--cream);letter-spacing:.01em;
+  }
+  .mrow .dots{flex:1;border-bottom:1px dotted rgba(201,169,97,.45);transform:translateY(-5px)}
+  .mrow .line span{
+    font-size:11.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);white-space:nowrap;
+  }
+  .mrow p{color:var(--cream-dim);font-size:14.5px;max-width:58ch;margin-top:6px}
+
+  /* ============ process: tasting courses ============ */
+  #proces .steps{max-width:720px;margin-inline:auto;display:flex;flex-direction:column;gap:0}
+  .step{
+    display:flex;gap:26px;align-items:flex-start;padding:26px 0;
+    border-bottom:1px solid rgba(201,169,97,.16);
+    transition:transform .45s var(--ease);
+  }
+  .step:last-child{border-bottom:none}
+  .step:hover{transform:translateX(8px)}
+  .step .no{
+    font-family:'Playfair Display',serif;font-style:italic;font-size:30px;color:var(--gold);
+    width:58px;flex:none;line-height:1.2;
+  }
+  .step h3{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;margin-bottom:6px}
+  .step p{color:var(--cream-dim);font-size:14.5px}
+
+  /* ============ demo: compliment band ============ */
+  #demo .band{
+    border-radius:6px;position:relative;overflow:hidden;
+    background:
+      radial-gradient(700px 380px at 12% 15%,rgba(201,169,97,.1),transparent 60%),
+      linear-gradient(160deg,#161007,#1d150a 60%,#161007);
+    box-shadow:0 0 0 1px var(--gold-line),inset 0 0 0 5px var(--card),inset 0 0 0 6px var(--gold-faint),0 40px 80px -40px rgba(0,0,0,.9);
+    padding:clamp(34px,5vw,64px);
+    display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center;
+  }
+  #demo .band h2{
+    font-size:clamp(26px,3.2vw,40px);font-weight:600;line-height:1.2;
+    background:linear-gradient(115deg,#f0dca8,#c9a961 55%,#eed9a2);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    margin:14px 0 24px;
+  }
+  .compliment{
+    display:inline-block;padding:9px 20px;border-radius:4px;
+    background:linear-gradient(180deg,var(--red-2),var(--red));
+    box-shadow:inset 0 0 0 1px rgba(230,207,149,.35);
+    font-size:10.5px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--cream);
+  }
+  .demo-steps{list-style:none;display:flex;flex-direction:column;gap:0;margin-bottom:34px}
+  .demo-steps li{
+    display:flex;gap:16px;align-items:baseline;padding:13px 0;
+    border-bottom:1px dotted rgba(201,169,97,.3);
+  }
+  .demo-steps li:last-child{border-bottom:none}
+  .demo-steps .n{font-family:'Playfair Display',serif;font-style:italic;font-size:19px;color:var(--gold);flex:none;width:26px}
+  .demo-steps p{font-size:15px}
+  .demo-steps small{display:block;font-size:12.5px;color:var(--cream-dim)}
+  .demo-art{position:relative}
+  .demo-art .flip-frame{width:min(340px,86%);margin-inline:auto;animation-duration:10s}
+  .demo-art .still{width:100%;height:100%;object-fit:contain;background:var(--card);border-radius:2px}
+  .qr-card{
+    position:absolute;left:2%;bottom:-26px;z-index:2;
+    width:132px;padding:11px 11px 10px;border-radius:12px;
+    background:#fdfcf8;text-align:center;text-decoration:none;
+    box-shadow:0 0 0 1px rgba(143,116,64,.4),0 26px 48px -18px rgba(0,0,0,.8);
+    animation:qrFloat 8s ease-in-out infinite;
+    transition:transform .4s var(--ease);will-change:transform;
+  }
+  @keyframes qrFloat{0%,100%{transform:rotate(-5deg) translateY(0)}50%{transform:rotate(-6.5deg) translateY(-9px)}}
+  .qr-card:hover{animation-play-state:paused;transform:rotate(0) scale(1.06)}
+  .qr-card img{width:100%;border-radius:6px}
+  .qr-card span{display:block;margin-top:7px;font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#3b332a}
+
+  /* ============ reservations (contact) ============ */
+  #rezervacii .split{display:grid;grid-template-columns:.9fr 1.1fr;gap:64px;align-items:start}
+  #rezervacii h2{
+    font-size:clamp(28px,3.4vw,42px);font-weight:600;line-height:1.2;margin:12px 0 18px;
+    background:linear-gradient(115deg,#f0dca8,#c9a961 55%,#eed9a2);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  #rezervacii .side p{color:var(--cream-dim);margin-bottom:30px;max-width:44ch}
+  .alt{display:flex;flex-direction:column;gap:14px;font-size:14.5px}
+  .alt a{display:inline-flex;align-items:center;gap:12px;color:var(--cream);text-decoration:none;transition:transform .35s var(--ease),color .3s ease;width:fit-content}
+  .alt a:hover{transform:translateX(6px);color:var(--gold-2)}
+  .alt svg{color:var(--gold);flex:none}
+  form{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .field{display:flex;flex-direction:column;gap:8px}
+  .field.full{grid-column:1/-1}
+  .field label{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+  .field input,.field textarea{
+    background:rgba(201,169,97,.05);
+    border:none;border-radius:3px;
+    box-shadow:inset 0 0 0 1px var(--gold-faint);
+    padding:15px 17px;color:var(--cream);
+    font-family:'Inter',sans-serif;font-size:15px;
+    transition:box-shadow .3s ease;
+  }
+  .field input:hover,.field textarea:hover{box-shadow:inset 0 0 0 1px var(--gold-line)}
+  .field input:focus,.field textarea:focus{outline:none;box-shadow:inset 0 0 0 1.5px var(--gold)}
+  .field textarea{resize:vertical;min-height:130px}
+  .form-foot{grid-column:1/-1;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+  .form-note{font-size:12px;color:var(--cream-dim)}
+
+  /* ============ footer: menu bottom ============ */
+  footer{padding:60px 0 46px;text-align:center}
+  .foot-rule{
+    display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:26px;
+    color:var(--gold-dim);font-size:13px;letter-spacing:.4em;
+  }
+  .foot-rule::before,.foot-rule::after{content:"";width:90px;height:1px;background:var(--gold-faint)}
+  footer .tag{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--cream-dim)}
+  footer .meta{margin-top:16px;font-size:12.5px;color:var(--cream-dim);display:flex;justify-content:center;gap:26px;flex-wrap:wrap}
+  footer .meta a{color:var(--cream);text-decoration:none}
+  footer .meta a:hover{color:var(--gold-2)}
+  footer .fine{margin-top:30px;font-size:11.5px;letter-spacing:.08em;color:rgba(240,231,211,.35)}
+
+  /* ============ lightbox ============ */
+  .lightbox{position:fixed;inset:0;z-index:220;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .5s var(--ease),visibility 0s linear .5s}
+  .lightbox.open{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .5s var(--ease)}
+  .lightbox::before{content:"";position:absolute;inset:0;background:rgba(8,6,3,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+  .lb-stage{position:absolute;inset:0}
+  .lb-frame{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    background:var(--card);padding:13px;border-radius:4px;
+    box-shadow:0 0 0 1px var(--gold-line),0 0 0 6px var(--card),0 0 0 7px var(--gold-faint),0 60px 120px -40px rgba(0,0,0,.9);
+    transition:transform .65s var(--ease),opacity .55s var(--ease);will-change:transform,opacity;
+  }
+  .lb-frame img{width:100%;height:100%;object-fit:cover;border-radius:2px;display:block}
+  .lb-btn{
+    position:absolute;z-index:5;width:54px;height:54px;border-radius:50%;
+    display:grid;place-items:center;cursor:pointer;border:none;
+    background:rgba(12,9,6,.55);color:var(--cream);
+    box-shadow:inset 0 0 0 1px var(--gold-line);
+    transition:transform .35s var(--ease),box-shadow .3s ease;
+  }
+  .lb-btn:hover{box-shadow:inset 0 0 0 1px var(--gold-2)}
+  .lb-close{top:24px;right:max(4vw,24px)}
+  .lb-close:hover{transform:rotate(90deg)}
+  .lb-prev{left:max(3vw,20px);top:50%;transform:translateY(-50%)}
+  .lb-next{right:max(3vw,20px);top:50%;transform:translateY(-50%)}
+  .lb-prev:hover,.lb-next:hover{transform:translateY(-50%) scale(1.1)}
+  .lb-cap{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:5;text-align:center;white-space:nowrap}
+  .lb-cap em{display:block;font-family:'Playfair Display',serif;font-style:italic;font-weight:500;font-size:21px;color:var(--cream)}
+  .lb-cap span{display:inline-block;margin-top:4px;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold)}
+  .lb-count{position:absolute;top:34px;left:max(4vw,24px);z-index:5;font-size:12px;letter-spacing:.32em;color:var(--cream-dim);font-variant-numeric:tabular-nums}
+  body.lb-open{overflow:hidden}
+
+  /* ============ responsive ============ */
+  @media (max-width:900px){
+    .dish-grid{grid-template-columns:repeat(2,1fr)}
+    #demo .band{grid-template-columns:1fr;gap:44px}
+    #rezervacii .split{grid-template-columns:1fr;gap:44px}
+  }
+  @media (max-width:640px){
+    section{padding:70px 0}
+    header{padding-top:112px}
+    .courses{display:none}
+    .page-frame{inset:6px}
+    nav{top:6px;left:6px;right:6px}
+    .dish-grid{
+      display:flex;overflow-x:auto;gap:16px;
+      scroll-snap-type:x mandatory;padding:4px 5vw 22px;margin-inline:-5vw;
+      -webkit-overflow-scrolling:touch;scrollbar-width:none;
+    }
+    .dish-grid::-webkit-scrollbar{display:none}
+    .dish{flex:none;width:min(76vw,320px);scroll-snap-align:center}
+    form{grid-template-columns:1fr}
+    .lb-btn{width:46px;height:46px}
+    .lb-close{top:14px;right:14px}
+    .lb-count{top:24px;left:16px}
+    .lb-cap em{font-size:16px}
+    .course-head h2::before,.course-head h2::after{width:30px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+    .rv{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="page-frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+<nav id="nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="#top">
+      <span class="mark" role="img" aria-hidden="true"></span>
+      <b>MENUFRAME<em>STUDIO</em></b>
+    </a>
+    <ul class="courses">
+      <li><a href="#portfolio">Портфолио</a></li>
+      <li class="dot">•</li>
+      <li><a href="#uslugi">Услуги</a></li>
+      <li class="dot">•</li>
+      <li><a href="#proces">Процес</a></li>
+      <li class="dot">•</li>
+      <li><a href="#rezervacii">Резервации</a></li>
+    </ul>
+    <a class="btn btn-gold magnetic" style="padding:12px 22px;font-size:12px" href="#demo">Безплатна демонстрация</a>
+  </div>
+</nav>
+
+<!-- ============ MENU HEADER ============ -->
+<header id="top">
+  <div class="wrap">
+    <div class="crest rv" role="img" aria-label="MenuFrame Studio лого"></div>
+    <div class="studio-line rv rv-d1">MenuFrame Studio</div>
+    <h1 class="rv rv-d1">Менюто е най-добрият продавач на вашия ресторант</h1>
+    <div class="rv rv-d2"><span class="plaque">Меню, което се избира с очите</span></div>
+    <p class="hero-tag rv rv-d2">Дизайн, професионални снимки и QR дигитални менюта, поднесени като ястия от висока кухня.</p>
+    <div class="hero-cta rv rv-d3">
+      <a class="btn btn-gold magnetic" href="#demo">
+        Заяви безплатна демонстрация
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a class="btn btn-ghost magnetic" href="#portfolio">Разгледай менюто</a>
+    </div>
+    <p class="hero-note rv rv-d4">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c9a961" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      Без ангажимент. Виждате примерен дизайн, преди да решите.
+    </p>
+    <div class="special rv rv-d4">
+      <div class="special-label">Специалитет на деня</div>
+      <div class="flip-frame">
+        <div class="flip" data-pool="menu-elegant.jpg,menu-sushi.jpeg,menu-american.jpg,menu-italian.jpg,menu-desserts.jpeg,menu-bubble.jpeg">
+          <img class="face f-front" src="assets/menu-elegant.jpg" alt="">
+          <img class="face f-rear" src="assets/menu-sushi.jpeg" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ PORTFOLIO ============ -->
+<section id="portfolio">
+  <div class="wrap">
+    <div class="course-head">
+      <div class="course-no rv">— първо —</div>
+      <h2 class="rv rv-d1">Портфолио</h2>
+      <p class="rv rv-d2">Демонстрационни дизайни от студиото, преди адаптация към конкретен ресторант. Изберете ястие, за да го разгледате отблизо.</p>
+      <div class="orn rv rv-d2">✦ ✦ ✦</div>
+    </div>
+    <div class="dish-grid">
+      <figure class="dish rv"><div class="ph"><img src="assets/menu-elegant.jpg" alt="Елегантно меню със златна типография" loading="lazy"></div>
+        <figcaption><b>Елегантно меню</b><span>Принт</span></figcaption></figure>
+      <figure class="dish rv rv-d1"><div class="ph"><img src="assets/menu-sushi.jpeg" alt="Дигитално меню в японски стил" loading="lazy"></div>
+        <figcaption><b>Японски стил</b><span>QR меню</span></figcaption></figure>
+      <figure class="dish rv rv-d2"><div class="ph"><img src="assets/menu-american.jpg" alt="Американско меню, бургери и барбекю" loading="lazy"></div>
+        <figcaption><b>Американско меню</b><span>Принт</span></figcaption></figure>
+      <figure class="dish rv"><div class="ph"><img src="assets/menu-italian.jpg" alt="Италианско меню, пица и паста" loading="lazy"></div>
+        <figcaption><b>Италианско меню</b><span>Принт</span></figcaption></figure>
+      <figure class="dish rv rv-d1"><div class="ph"><img src="assets/menu-desserts.jpeg" alt="Меню за сладкарница в парижки стил" loading="lazy"></div>
+        <figcaption><b>Сладки изкушения</b><span>Принт</span></figcaption></figure>
+      <figure class="dish rv rv-d2"><div class="ph"><img src="assets/menu-bubble.jpeg" alt="Цветно меню за bubble tea напитки" loading="lazy"></div>
+        <figcaption><b>Bubble Drinks</b><span>Принт</span></figcaption></figure>
+      <figure class="dish rv"><div class="ph"><img src="assets/promo-qr.jpg" alt="QR меню кампания" loading="lazy"></div>
+        <figcaption><b>QR Меню</b><span>Кампания</span></figcaption></figure>
+      <figure class="dish rv rv-d1"><div class="ph"><img src="assets/promo-tablet.jpeg" alt="Дигитално меню на таблет" loading="lazy"></div>
+        <figcaption><b>Меню с очите</b><span>Кампания</span></figcaption></figure>
+      <figure class="dish rv rv-d2"><div class="ph"><img src="assets/promo-demo.jpeg" alt="Безплатна демонстрация" loading="lazy"></div>
+        <figcaption><b>Демонстрация</b><span>Кампания</span></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section id="uslugi">
+  <div class="wrap">
+    <div class="course-head">
+      <div class="course-no rv">— второ —</div>
+      <h2 class="rv rv-d1">Услуги</h2>
+      <p class="rv rv-d2">Всичко, което едно меню трябва да умее, поднесено като а ла карт.</p>
+      <div class="orn rv rv-d2">✦ ✦ ✦</div>
+    </div>
+    <div class="list">
+      <div class="mrow rv">
+        <div class="line"><b>Дизайн на меню</b><i class="dots"></i><span>По запитване</span></div>
+        <p>Менюто като дизайн обект, с типография, подредба и акценти, които водят окото към правилните ястия.</p>
+      </div>
+      <div class="mrow rv rv-d1">
+        <div class="line"><b>Професионални снимки</b><i class="dots"></i><span>По запитване</span></div>
+        <p>Ястия, заснети така, че да се избират с очите, с апетитна светлина и стил, отговарящ на кухнята ви.</p>
+      </div>
+      <div class="mrow rv rv-d2">
+        <div class="line"><b>QR дигитално меню</b><i class="dots"></i><span>По запитване</span></div>
+        <p>Елегантно дигитално меню с QR код на масата, което се отваря мигновено и се обновява без нов печат.</p>
+      </div>
+      <div class="mrow rv rv-d3">
+        <div class="line"><b>Редизайн и сезонни обновления</b><i class="dots"></i><span>По запитване</span></div>
+        <p>Освежаваме съществуващи менюта и поддържаме сезонните промени, за да е менюто винаги актуално.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROCESS ============ -->
+<section id="proces">
+  <div class="wrap">
+    <div class="course-head">
+      <div class="course-no rv">— трето —</div>
+      <h2 class="rv rv-d1">Как работим</h2>
+      <p class="rv rv-d2">Дегустация в четири стъпки, изцяло онлайн, без загубено време за вашия екип.</p>
+      <div class="orn rv rv-d2">✦ ✦ ✦</div>
+    </div>
+    <div class="steps">
+      <div class="step rv"><div class="no serif">I.</div>
+        <div><h3>Изпращате менюто</h3><p>Пращате ни текущото си меню, файл, снимка или линк, заедно с предпочитан стил.</p></div></div>
+      <div class="step rv rv-d1"><div class="no serif">II.</div>
+        <div><h3>Създаваме дизайна</h3><p>Изграждаме дизайна и снимките, съобразени с бранда и атмосферата на заведението.</p></div></div>
+      <div class="step rv rv-d2"><div class="no serif">III.</div>
+        <div><h3>Получавате QR код</h3><p>Дигиталното меню е готово с QR код за масите, а промените по него са бързи и лесни.</p></div></div>
+      <div class="step rv rv-d3"><div class="no serif">IV.</div>
+        <div><h3>Менюто е готово</h3><p>Получавате финалните файлове, готови за печат, и менюто започва да продава вместо вас.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEMO ============ -->
+<section id="demo">
+  <div class="wrap">
+    <div class="band rv">
+      <div>
+        <span class="compliment">Комплимент от студиото</span>
+        <h2>Вижте как би изглеждало вашето меню. Безплатно.</h2>
+        <ul class="demo-steps">
+          <li><span class="n">1.</span><p>Изпратете ни меню или линк<small>Работим с това, което вече имате.</small></p></li>
+          <li><span class="n">2.</span><p>Изберете предпочитан стил<small>Елегантен, модерен, класически или по ваша идея.</small></p></li>
+          <li><span class="n">3.</span><p>Получавате примерен дизайн<small>Безплатно и без ангажимент да продължите.</small></p></li>
+        </ul>
+        <a class="btn btn-gold magnetic" href="https://www.instagram.com/menuframe.studio.bg" target="_blank" rel="noopener">
+          Пиши ни на лично
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+        </a>
+      </div>
+      <div class="demo-art">
+        <div class="flip-frame"><img class="still" src="assets/menu-bubble.jpeg" alt="Примерен дизайн Bubble Drinks"></div>
+        <a class="qr-card" href="https://www.instagram.com/menuframe.studio.bg" target="_blank" rel="noopener">
+          <img src="assets/qr-instagram.png" alt="QR код към Instagram на MenuFrame Studio">
+          <span>Сканирай и ни пиши</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESERVATIONS ============ -->
+<section id="rezervacii">
+  <div class="wrap split">
+    <div class="side">
+      <div class="course-no rv">— накрая —</div>
+      <h2 class="rv rv-d1">Резервации</h2>
+      <p class="rv rv-d2">Пишете ни и ще получите отговор с примерен дизайн за вашето заведение. Най-бързо отговаряме в Instagram.</p>
+      <div class="alt rv rv-d3">
+        <a href="https://www.instagram.com/menuframe.studio.bg" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+          @menuframe.studio.bg
+        </a>
+        <a href="#" aria-disabled="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg>
+          [имейл, ще бъде добавен]
+        </a>
+        <a href="#" aria-disabled="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.6 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+          [телефон, ще бъде добавен]
+        </a>
+      </div>
+    </div>
+    <form class="rv rv-d2" action="#" id="contactForm">
+      <div class="field">
+        <label for="f-name">Вашето име</label>
+        <input id="f-name" name="name" type="text" autocomplete="name" required>
+      </div>
+      <div class="field">
+        <label for="f-rest">Ресторант</label>
+        <input id="f-rest" name="restaurant" type="text" autocomplete="organization" required>
+      </div>
+      <div class="field full">
+        <label for="f-email">Имейл</label>
+        <input id="f-email" name="email" type="email" autocomplete="email" required>
+      </div>
+      <div class="field full">
+        <label for="f-msg">Съобщение</label>
+        <textarea id="f-msg" name="message" placeholder="Разкажете ни за заведението и менюто, което искате."></textarea>
+      </div>
+      <div class="form-foot">
+        <button class="btn btn-gold magnetic" type="submit">
+          Изпрати запитване
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        </button>
+        <span class="form-note">[Формата ще бъде свързана към имейл при качване на сайта.]</span>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-rule">✦</div>
+    <p class="tag">„Меню, което се избира с очите."</p>
+    <div class="meta">
+      <a href="https://www.instagram.com/menuframe.studio.bg" target="_blank" rel="noopener">Instagram: @menuframe.studio.bg</a>
+      <span>[имейл, ще бъде добавен]</span>
+      <span>[телефон и град, ще бъдат добавени]</span>
+    </div>
+    <p class="fine">© 2026 MenuFrame Studio. Всички права запазени. Дизайн, снимки и QR менюта за ресторанти.</p>
+  </div>
+</footer>
+
+<!-- ============ LIGHTBOX ============ -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Разглеждане на портфолио">
+  <div class="lb-stage" id="lbStage"></div>
+  <span class="lb-count" id="lbCount"></span>
+  <button class="lb-btn lb-close" id="lbClose" type="button" aria-label="Затвори">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </button>
+  <button class="lb-btn lb-prev" id="lbPrev" type="button" aria-label="Предишен">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+  </button>
+  <button class="lb-btn lb-next" id="lbNext" type="button" aria-label="Следващ">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </button>
+  <div class="lb-cap" id="lbCap"></div>
+</div>
+
+<script>
+(function(){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* nav bg */
+  const nav = document.getElementById('nav');
+  const onScrollNav = () => nav.classList.toggle('scrolled', scrollY > 40);
+  addEventListener('scroll', onScrollNav, {passive:true}); onScrollNav();
+
+  /* reveal */
+  const io = new IntersectionObserver(entries=>{
+    for(const e of entries){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }
+  },{threshold:.14,rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+  /* lightbox on dishes */
+  const pieces = [...document.querySelectorAll('.dish')];
+  const lb = document.getElementById('lightbox');
+  const lbStage = document.getElementById('lbStage');
+  const lbCap = document.getElementById('lbCap');
+  const lbCount = document.getElementById('lbCount');
+  let cur = 0, curFrame = null, navBusy = false;
+
+  const fitSize = (nw, nh) => {
+    const pad = innerWidth < 640 ? 10 : 13;
+    const maxW = Math.min(innerWidth * .86, 940);
+    const maxH = innerHeight * (innerWidth < 640 ? .6 : .72);
+    const r = Math.min((maxW - 2*pad)/nw, (maxH - 2*pad)/nh);
+    return { w: nw*r + 2*pad, h: nh*r + 2*pad };
+  };
+  const buildFrame = (i) => {
+    const src = pieces[i].querySelector('img');
+    const f = document.createElement('div');
+    f.className = 'lb-frame';
+    const im = new Image();
+    im.src = src.currentSrc || src.src;
+    im.alt = src.alt;
+    f.appendChild(im);
+    const { w, h } = fitSize(src.naturalWidth || 4, src.naturalHeight || 4);
+    f.style.width = w + 'px'; f.style.height = h + 'px';
+    return f;
+  };
+  const setCap = (i) => {
+    const name = pieces[i].querySelector('figcaption b').textContent;
+    const tag = pieces[i].querySelector('figcaption span').textContent;
+    lbCap.innerHTML = `<em>${name}</em><span>${tag}</span>`;
+    lbCount.textContent = String(i+1).padStart(2,'0') + ' — ' + String(pieces.length).padStart(2,'0');
+    const pre = new Image(); pre.src = pieces[(i+1)%pieces.length].querySelector('img').src;
+  };
+  const openLb = (i) => {
+    cur = i;
+    lb.classList.add('open'); document.body.classList.add('lb-open');
+    lbStage.innerHTML = '';
+    const f = buildFrame(i); curFrame = f;
+    lbStage.appendChild(f); setCap(i);
+    const t = pieces[i].getBoundingClientRect();
+    requestAnimationFrame(() => {
+      const r = f.getBoundingClientRect();
+      const dx = (t.left + t.width/2) - (r.left + r.width/2);
+      const dy = (t.top + t.height/2) - (r.top + r.height/2);
+      const s = t.width / r.width;
+      f.style.transition = 'none';
+      f.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(${s})`;
+      requestAnimationFrame(() => { f.style.transition = ''; f.style.transform = 'translate(-50%,-50%)'; });
+    });
+  };
+  const closeLb = () => {
+    if(!curFrame) return;
+    const f = curFrame;
+    const t = pieces[cur].getBoundingClientRect();
+    const r = f.getBoundingClientRect();
+    const onScreen = t.bottom > 0 && t.top < innerHeight && t.right > 0 && t.left < innerWidth;
+    if(onScreen){
+      const dx = (t.left + t.width/2) - (r.left + r.width/2);
+      const dy = (t.top + t.height/2) - (r.top + r.height/2);
+      f.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(${t.width / r.width})`;
+      f.style.opacity = '.1';
+    } else { f.style.transform = 'translate(-50%,-50%) scale(.92)'; f.style.opacity = '0'; }
+    lb.classList.remove('open'); document.body.classList.remove('lb-open');
+    curFrame = null;
+    setTimeout(() => { if(!lb.classList.contains('open')) lbStage.innerHTML = ''; }, 520);
+  };
+  const navLb = (dir) => {
+    if(navBusy || !lb.classList.contains('open')) return;
+    navBusy = true;
+    const ni = (cur + dir + pieces.length) % pieces.length;
+    const old = curFrame;
+    const f = buildFrame(ni);
+    f.style.transition = 'none';
+    f.style.transform = `translate(calc(-50% + ${dir*110}px), -50%) scale(.94)`;
+    f.style.opacity = '0';
+    lbStage.appendChild(f);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      f.style.transition = ''; f.style.transform = 'translate(-50%,-50%)'; f.style.opacity = '1';
+      if(old){ old.style.transform = `translate(calc(-50% + ${-dir*110}px), -50%) scale(.94)`; old.style.opacity = '0'; }
+    }));
+    setTimeout(() => { old && old.remove(); navBusy = false; }, 600);
+    cur = ni; curFrame = f; setCap(ni);
+  };
+  pieces.forEach((p, i) => {
+    p.setAttribute('role','button'); p.setAttribute('tabindex','0');
+    p.setAttribute('aria-label','Разгледай в голям размер');
+    p.addEventListener('click', () => openLb(i));
+    p.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openLb(i); } });
+  });
+  document.getElementById('lbClose').addEventListener('click', closeLb);
+  document.getElementById('lbPrev').addEventListener('click', () => navLb(-1));
+  document.getElementById('lbNext').addEventListener('click', () => navLb(1));
+  lbStage.addEventListener('click', e => { if(e.target === lbStage) closeLb(); });
+  addEventListener('keydown', e => {
+    if(!lb.classList.contains('open')) return;
+    if(e.key === 'Escape') closeLb();
+    if(e.key === 'ArrowRight') navLb(1);
+    if(e.key === 'ArrowLeft') navLb(-1);
+  });
+  let wheelAcc = 0, wheelLock = false;
+  lb.addEventListener('wheel', e => {
+    e.preventDefault();
+    if(wheelLock) return;
+    wheelAcc += e.deltaY + e.deltaX;
+    if(Math.abs(wheelAcc) > 50){
+      navLb(wheelAcc > 0 ? 1 : -1);
+      wheelAcc = 0; wheelLock = true;
+      setTimeout(() => wheelLock = false, 550);
+    }
+  }, {passive:false});
+  let touchX = null;
+  lb.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, {passive:true});
+  lb.addEventListener('touchend', e => {
+    if(touchX === null) return;
+    const d = e.changedTouches[0].clientX - touchX;
+    if(Math.abs(d) > 45) navLb(d < 0 ? 1 : -1);
+    touchX = null;
+  }, {passive:true});
+
+  /* form placeholder */
+  document.getElementById('contactForm').addEventListener('submit', e => {
+    e.preventDefault();
+    alert('Формата още не е свързана към имейл. Пишете ни в Instagram: @menuframe.studio.bg');
+  });
+
+  if(reduce) return;
+
+  /* specialty flip */
+  const flip = document.querySelector('.special .flip');
+  if(flip){
+    const pool = flip.dataset.pool.split(',');
+    pool.forEach(src => { const im = new Image(); im.src = 'assets/' + src; });
+    let idx = 1, angle = 0;
+    setInterval(() => {
+      angle += 180;
+      flip.style.transform = `rotateX(${angle}deg)`;
+      setTimeout(() => {
+        idx = (idx + 1) % pool.length;
+        const hidden = (angle / 180) % 2 === 1 ? '.f-front' : '.f-rear';
+        flip.querySelector(hidden).src = 'assets/' + pool[idx];
+      }, 1300);
+    }, 5000);
+  }
+
+  /* magnetic buttons */
+  if(matchMedia('(pointer:fine)').matches){
+    document.querySelectorAll('.magnetic').forEach(btn=>{
+      btn.addEventListener('mousemove', e=>{
+        const r = btn.getBoundingClientRect();
+        const x = (e.clientX - r.left - r.width/2) * 0.18;
+        const y = (e.clientY - r.top - r.height/2) * 0.26;
+        btn.style.transform = `translate(${x}px,${y}px)`;
+      });
+      btn.addEventListener('mouseleave', ()=>{ btn.style.transform=''; });
+    });
+  }
+})();
+</script>
+</body>
+</html>

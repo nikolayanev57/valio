@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MenuFrame Studio — Меню, което се избира с очите</title>
+<meta name="description" content="Студио за дизайн на ресторантски менюта. Дизайн, снимки и QR дигитални менюта, които продават.">
+<link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16120e;
+    --ink-2:#1e1913;
+    --ink-3:#26201a;
+    --cream:#f4eee1;
+    --cream-2:#ede5d3;
+    --paper:#faf6ec;
+    --brass:#b3903f;
+    --brass-2:#d8b96a;
+    --brass-dim:#8a6f37;
+    --red:#d3271d;
+    --line-dark:rgba(216,185,106,.18);
+    --line-light:rgba(22,18,14,.14);
+    --tx-dark:#efe7d6;
+    --tx-dark-dim:rgba(239,231,214,.62);
+    --tx-light:#1c1712;
+    --tx-light-dim:rgba(28,23,18,.66);
+    --ease:cubic-bezier(.22,.9,.28,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    font-size:16px;line-height:1.7;
+    color:var(--tx-dark);
+    background:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--brass);color:var(--ink)}
+  img{max-width:100%;display:block}
+
+  h1,h2,h3,.serif{font-family:'Playfair Display',Georgia,serif}
+  .display{letter-spacing:-.02em;line-height:1.08;font-weight:600}
+
+  .wrap{width:min(1180px,92vw);margin-inline:auto}
+  section{position:relative;scroll-margin-top:84px}
+
+  /* ---------- overline / eyebrow ---------- */
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:14px;
+    font-size:12px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--brass-2);
+  }
+  .eyebrow::before{content:"";width:36px;height:1px;background:var(--brass);flex:none}
+  .light .eyebrow{color:var(--brass-dim)}
+  .light .eyebrow::before{background:var(--brass-dim)}
+
+  /* ---------- reveal on scroll (transform/opacity only) ---------- */
+  .rv{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+  .rv.in{opacity:1;transform:none}
+  .rv-d1{transition-delay:.08s}.rv-d2{transition-delay:.16s}.rv-d3{transition-delay:.24s}.rv-d4{transition-delay:.32s}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:fixed;inset:0 0 auto 0;z-index:60;
+    transform:translateY(0);
+    transition:transform .5s var(--ease);
+  }
+  nav .bar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 0;
+  }
+  nav::before{
+    content:"";position:absolute;inset:0;z-index:-1;
+    background:linear-gradient(to bottom,rgba(15,12,9,.92),rgba(15,12,9,.78));
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(216,185,106,.12);
+    opacity:0;transition:opacity .4s ease;
+  }
+  nav.scrolled::before{opacity:1}
+  .brand{
+    display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--tx-dark);
+    background:none;border:none;cursor:pointer;padding:0;font-family:inherit;text-align:left;
+    transition:transform .35s var(--ease);
+  }
+  .brand:hover{transform:translateY(-2px)}
+  .brand:focus-visible{outline:2px solid var(--brass-2);outline-offset:4px;border-radius:8px}
+  .brand-mark{
+    width:58px;height:58px;border-radius:13px;flex:none;
+    background-image:url("assets/logo.jpg");
+    background-size:200%;background-position:50% 24%;
+    box-shadow:0 0 0 1.5px rgba(216,185,106,.55),0 6px 18px -6px rgba(0,0,0,.7);
+  }
+  .brand-name{font-size:17px;font-weight:600;letter-spacing:.14em}
+  .brand-name em{font-style:normal;color:var(--brass-2);letter-spacing:.3em;font-size:11px;display:block;line-height:1.3}
+  .brand-hint{
+    display:block;font-size:10px;letter-spacing:.22em;color:var(--tx-dark-dim);
+    margin-top:3px;text-transform:uppercase;
+  }
+  .nav-links{display:flex;gap:34px;list-style:none}
+  .nav-links a{
+    color:var(--tx-dark-dim);text-decoration:none;font-size:13.5px;font-weight:500;letter-spacing:.04em;
+    position:relative;transition:color .3s ease;
+  }
+  .nav-links a::after{
+    content:"";position:absolute;left:0;bottom:-6px;width:100%;height:1px;
+    background:var(--brass-2);transform:scaleX(0);transform-origin:left;
+    transition:transform .35s var(--ease);
+  }
+  .nav-links a:hover,.nav-links a:focus-visible{color:var(--tx-dark)}
+  .nav-links a:hover::after,.nav-links a:focus-visible::after{transform:scaleX(1)}
+
+  /* ---------- full-screen menu overlay ---------- */
+  .menu-overlay{
+    position:fixed;inset:0;z-index:100;
+    display:flex;align-items:center;
+    background:
+      radial-gradient(900px 600px at 80% 15%,rgba(179,144,63,.14),transparent 60%),
+      linear-gradient(160deg,#120e09 0%,#1b150d 100%);
+    opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity .55s var(--ease),visibility 0s linear .55s;
+  }
+  .menu-overlay.open{
+    opacity:1;visibility:visible;pointer-events:auto;
+    transition:opacity .55s var(--ease);
+  }
+  .menu-inner{
+    width:min(1180px,92vw);margin-inline:auto;
+    display:grid;grid-template-columns:1.2fr .8fr;gap:60px;align-items:center;
+  }
+  .menu-links{list-style:none;display:flex;flex-direction:column;gap:6px}
+  .menu-links a{
+    display:flex;align-items:baseline;gap:22px;
+    font-family:'Playfair Display',serif;font-weight:600;letter-spacing:-.02em;
+    font-size:clamp(36px,5.2vw,60px);line-height:1.25;
+    color:var(--tx-dark);text-decoration:none;
+    opacity:0;transform:translateY(34px);
+    transition:opacity .6s var(--ease),transform .6s var(--ease),color .3s ease;
+  }
+  .menu-links a i{
+    font-family:'Inter',sans-serif;font-style:normal;font-size:13px;font-weight:500;
+    letter-spacing:.24em;color:var(--brass-2);
+  }
+  .menu-links a:hover,.menu-links a:focus-visible{color:var(--brass-2)}
+  .menu-overlay.open .menu-links a{opacity:1;transform:none}
+  .menu-overlay.open .menu-links li:nth-child(1) a{transition-delay:.10s}
+  .menu-overlay.open .menu-links li:nth-child(2) a{transition-delay:.16s}
+  .menu-overlay.open .menu-links li:nth-child(3) a{transition-delay:.22s}
+  .menu-overlay.open .menu-links li:nth-child(4) a{transition-delay:.28s}
+  .menu-overlay.open .menu-links li:nth-child(5) a{transition-delay:.34s}
+  .menu-overlay.open .menu-links li:nth-child(6) a{transition-delay:.40s}
+  .menu-side{
+    display:flex;flex-direction:column;gap:26px;
+    opacity:0;transform:translateY(26px);
+    transition:opacity .6s var(--ease) .42s,transform .6s var(--ease) .42s;
+  }
+  .menu-overlay.open .menu-side{opacity:1;transform:none}
+  .menu-side .foot-tag{margin:0}
+  .menu-close{
+    position:absolute;top:26px;right:max(4vw,26px);
+    width:54px;height:54px;border-radius:50%;
+    display:grid;place-items:center;cursor:pointer;
+    background:none;border:none;color:var(--tx-dark);
+    box-shadow:inset 0 0 0 1px rgba(216,185,106,.4);
+    transition:transform .4s var(--ease),box-shadow .3s ease;
+  }
+  .menu-close:hover,.menu-close:focus-visible{transform:rotate(90deg);box-shadow:inset 0 0 0 1px var(--brass-2)}
+  .menu-close:focus-visible{outline:2px solid var(--brass-2);outline-offset:3px}
+  body.menu-open{overflow:hidden}
+
+  /* ---------- lightbox gallery ---------- */
+  .lightbox{
+    position:fixed;inset:0;z-index:120;
+    opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity .5s var(--ease),visibility 0s linear .5s;
+  }
+  .lightbox.open{
+    opacity:1;visibility:visible;pointer-events:auto;
+    transition:opacity .5s var(--ease);
+  }
+  .lightbox::before{
+    content:"";position:absolute;inset:0;
+    background:rgba(10,8,5,.93);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  }
+  .lb-stage{position:absolute;inset:0}
+  .lb-frame{
+    position:absolute;left:50%;top:50%;
+    transform:translate(-50%,-50%);
+    background:#0d0a07;padding:14px;border-radius:4px;
+    box-shadow:
+      0 0 0 1px rgba(216,185,106,.55),
+      0 0 0 6px #0d0a07,
+      0 0 0 7px rgba(216,185,106,.28),
+      0 60px 120px -40px rgba(0,0,0,.9);
+    transition:transform .65s var(--ease),opacity .55s var(--ease);
+    will-change:transform,opacity;
+  }
+  .lb-frame img{width:100%;height:100%;object-fit:cover;border-radius:2px;display:block}
+  .lb-close{
+    position:absolute;top:24px;right:max(4vw,24px);z-index:5;
+    width:54px;height:54px;border-radius:50%;
+    display:grid;place-items:center;cursor:pointer;
+    background:rgba(13,10,7,.5);border:none;color:var(--tx-dark);
+    box-shadow:inset 0 0 0 1px rgba(216,185,106,.4);
+    transition:transform .4s var(--ease),box-shadow .3s ease;
+  }
+  .lb-close:hover,.lb-close:focus-visible{transform:rotate(90deg);box-shadow:inset 0 0 0 1px var(--brass-2)}
+  .lb-nav{
+    position:absolute;top:50%;transform:translateY(-50%);z-index:5;
+    width:58px;height:58px;border-radius:50%;
+    display:grid;place-items:center;cursor:pointer;
+    background:rgba(13,10,7,.5);border:none;color:var(--tx-dark);
+    box-shadow:inset 0 0 0 1px rgba(216,185,106,.4);
+    transition:transform .35s var(--ease),box-shadow .3s ease;
+  }
+  .lb-prev{left:max(3vw,20px)}
+  .lb-next{right:max(3vw,20px)}
+  .lb-nav:hover,.lb-nav:focus-visible{transform:translateY(-50%) scale(1.1);box-shadow:inset 0 0 0 1px var(--brass-2)}
+  .lb-nav:active{transform:translateY(-50%) scale(.96)}
+  .lb-close:focus-visible,.lb-nav:focus-visible{outline:2px solid var(--brass-2);outline-offset:3px}
+  .lb-cap{
+    position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:5;
+    text-align:center;white-space:nowrap;
+  }
+  .lb-cap em{
+    display:block;font-family:'Playfair Display',serif;font-style:italic;font-weight:500;
+    font-size:22px;color:var(--tx-dark);letter-spacing:.01em;
+  }
+  .lb-cap span{
+    display:inline-block;margin-top:5px;
+    font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--brass-2);
+  }
+  .lb-count{
+    position:absolute;top:34px;left:max(4vw,24px);z-index:5;
+    font-size:12px;letter-spacing:.34em;color:var(--tx-dark-dim);
+    font-variant-numeric:tabular-nums;
+  }
+  .lb-hint{
+    position:absolute;bottom:30px;right:max(4vw,24px);z-index:5;
+    font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:rgba(239,231,214,.4);
+  }
+  @media (max-width:760px){
+    .lb-nav{width:46px;height:46px}
+    .lb-close{top:16px;right:16px;width:46px;height:46px}
+    .lb-cap em{font-size:17px}
+    .lb-count{top:28px;left:18px}
+    .lb-hint{display:none}
+    .lb-frame{padding:10px}
+  }
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-flex;align-items:center;gap:12px;
+    padding:16px 30px;border-radius:999px;
+    font-family:'Inter',sans-serif;font-size:14px;font-weight:600;letter-spacing:.06em;
+    text-decoration:none;cursor:pointer;border:none;white-space:nowrap;
+    transition:transform .35s var(--ease),opacity .3s ease;
+    will-change:transform;
+  }
+  .btn:active{transform:scale(.97)}
+  .btn-gold{
+    background:linear-gradient(135deg,#caa657,#a9862f 60%,#c8a552);
+    color:#191307;
+    box-shadow:0 10px 30px -10px rgba(202,166,87,.55),0 4px 12px -6px rgba(0,0,0,.6);
+  }
+  .btn-gold:hover,.btn-gold:focus-visible{transform:translateY(-3px)}
+  .btn-ghost{
+    color:var(--tx-dark);background:transparent;
+    box-shadow:inset 0 0 0 1px rgba(216,185,106,.4);
+  }
+  .btn-ghost:hover,.btn-ghost:focus-visible{transform:translateY(-3px);box-shadow:inset 0 0 0 1px rgba(216,185,106,.8)}
+  .btn svg{transition:transform .35s var(--ease)}
+  .btn:hover svg{transform:translateX(4px)}
+  .btn:focus-visible{outline:2px solid var(--brass-2);outline-offset:3px}
+  .btn-sm{padding:12px 22px;font-size:13px}
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex;align-items:center;
+    padding:140px 0 90px;
+    background:
+      radial-gradient(1100px 600px at 78% 18%,rgba(179,144,63,.14),transparent 60%),
+      radial-gradient(800px 500px at 12% 85%,rgba(211,39,29,.06),transparent 60%),
+      linear-gradient(180deg,#131009 0%,var(--ink) 55%,#14100c 100%);
+    overflow:hidden;
+  }
+  .hero-grid{
+    display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center;
+  }
+  .hero h1{
+    font-size:clamp(42px,5.4vw,74px);
+    margin:26px 0 24px;
+  }
+  .hero h1 .gold{
+    background:linear-gradient(115deg,#e6cd8b,#b3903f 55%,#e0c47c);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    font-style:italic;
+  }
+  .hero p.lead{
+    font-size:clamp(16px,1.4vw,18.5px);color:var(--tx-dark-dim);
+    max-width:52ch;margin-bottom:40px;
+  }
+  .hero-cta{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+  .hero-note{
+    margin-top:34px;display:flex;align-items:center;gap:12px;
+    font-size:13px;color:var(--tx-dark-dim);letter-spacing:.05em;
+  }
+  .hero-note svg{flex:none}
+
+  /* floating framed mockup */
+  .hero-art{position:relative;height:min(680px,78vh);min-height:480px}
+  .frame{
+    position:absolute;border-radius:4px;overflow:hidden;
+    background:#0d0a07;
+    padding:14px;
+    box-shadow:
+      0 0 0 1px rgba(216,185,106,.55),
+      0 0 0 6px #0d0a07,
+      0 0 0 7px rgba(216,185,106,.28),
+      0 40px 80px -30px rgba(0,0,0,.85),
+      0 18px 40px -20px rgba(179,144,63,.25);
+    will-change:transform;
+  }
+  .frame img{border-radius:2px;height:100%;width:100%;object-fit:cover}
+  .hero-art .frame{perspective:1400px}
+  .flip{
+    position:relative;width:100%;height:100%;
+    transform-style:preserve-3d;
+    transition:transform 1.2s cubic-bezier(.45,.05,.15,1);
+    will-change:transform;
+  }
+  .face{
+    position:absolute;inset:0;
+    object-fit:contain;background:#0d0a07;
+    backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  }
+  .f-rear{transform:rotateX(180deg)}
+  .frame-main{
+    width:min(430px,80%);aspect-ratio:1/1;
+    right:-2%;top:0;
+    animation:float1 9s ease-in-out infinite;
+  }
+  .frame-back{
+    width:min(430px,80%);aspect-ratio:1/1;
+    left:-5%;bottom:0;
+    animation:float2 11s ease-in-out infinite;
+  }
+  @keyframes float1{
+    0%,100%{transform:translateY(0) rotate(1.6deg)}
+    50%{transform:translateY(-18px) rotate(2.4deg)}
+  }
+  @keyframes float2{
+    0%,100%{transform:translateY(0) rotate(-2deg)}
+    50%{transform:translateY(-14px) rotate(-2.8deg)}
+  }
+  .hero-scroll{
+    position:absolute;left:50%;bottom:26px;transform:translateX(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+    color:var(--tx-dark-dim);font-size:11px;letter-spacing:.3em;text-transform:uppercase;
+    text-decoration:none;transition:opacity .3s ease;opacity:.7;
+  }
+  .hero-scroll:hover{opacity:1}
+  .hero-scroll .dot{
+    width:1px;height:44px;background:linear-gradient(to bottom,var(--brass-2),transparent);
+    animation:drip 2.4s ease-in-out infinite;transform-origin:top;
+  }
+  @keyframes drip{0%{transform:scaleY(0)}45%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
+
+  /* ---------- section shell ---------- */
+  .sect{padding:120px 0}
+  .sect-head{max-width:640px;margin-bottom:64px}
+  .sect-head h2{font-size:clamp(32px,3.6vw,50px);margin:22px 0 18px}
+  .sect-head p{color:var(--tx-dark-dim);font-size:17px}
+  .light{background:var(--cream);color:var(--tx-light)}
+  .light .sect-head p{color:var(--tx-light-dim)}
+
+  /* ---------- portfolio ---------- */
+  #portfolio{background:linear-gradient(180deg,var(--paper),var(--cream) 30%,var(--cream-2))}
+  .masonry{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:28px;
+  }
+  .m-col{display:flex;flex-direction:column;gap:28px}
+  .m-col:nth-child(2){transform:translateY(56px)}
+  .piece{
+    position:relative;border-radius:6px;overflow:hidden;
+    background:#0f0c08;padding:12px;
+    box-shadow:
+      0 0 0 1px rgba(138,111,55,.35),
+      0 22px 45px -22px rgba(38,28,12,.45),
+      0 10px 18px -10px rgba(38,28,12,.28);
+    transition:transform .55s var(--ease),box-shadow .55s var(--ease);
+    will-change:transform;
+  }
+  .piece:hover{
+    transform:translateY(-10px);
+    box-shadow:
+      0 0 0 1px rgba(138,111,55,.55),
+      0 42px 80px -30px rgba(38,28,12,.55),
+      0 20px 34px -16px rgba(179,144,63,.35);
+  }
+  .piece{cursor:zoom-in}
+  .piece img{border-radius:3px;width:100%;height:auto;transition:transform .55s var(--ease);will-change:transform}
+  .piece:hover img{transform:scale(1.03)}
+  .piece figcaption{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:14px 6px 4px;
+    font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:rgba(239,231,214,.75);
+  }
+  .piece figcaption span:last-child{
+    font-size:10.5px;letter-spacing:.22em;color:var(--brass-2);white-space:nowrap;
+  }
+  .gallery-hint{display:none;margin-top:22px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--tx-light-dim)}
+
+  /* ---------- live demo (phone with the real demo inside) ---------- */
+  #live{
+    background:
+      radial-gradient(900px 560px at 85% 30%,rgba(179,144,63,.16),transparent 60%),
+      radial-gradient(700px 420px at 10% 90%,rgba(211,39,29,.06),transparent 60%),
+      linear-gradient(180deg,#110d09,#171209 60%,#14100c);
+    overflow:hidden;
+  }
+  .live-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:60px;align-items:center}
+  .live-grid h2{font-size:clamp(32px,3.6vw,50px);margin:22px 0 18px}
+  .live-grid .lead{color:var(--tx-dark-dim);font-size:17px;max-width:48ch;margin-bottom:26px}
+  .live-points{list-style:none;display:grid;gap:12px;margin-bottom:34px}
+  .live-points li{
+    display:flex;align-items:center;gap:14px;font-size:15px;color:var(--tx-dark);
+  }
+  .live-points li::before{
+    content:"";width:26px;height:26px;flex:none;border-radius:50%;
+    box-shadow:inset 0 0 0 1px rgba(216,185,106,.5);
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d8b96a' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 12 4 4 8-8'/%3E%3C/svg%3E") center/13px no-repeat;
+  }
+  .live-art{position:relative;display:flex;flex-direction:column;align-items:center;gap:22px}
+  .live-art::before{
+    content:"";position:absolute;left:50%;top:50%;width:460px;height:460px;border-radius:50%;
+    transform:translate(-50%,-50%);pointer-events:none;
+    background:radial-gradient(circle,rgba(216,185,106,.22),rgba(216,185,106,.05) 45%,transparent 70%);
+    animation:glow 6s ease-in-out infinite;
+  }
+  @keyframes glow{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.8}50%{transform:translate(-50%,-50%) scale(1.12);opacity:1}}
+  .phone{
+    position:relative;width:min(380px,100%);aspect-ratio:390/812;
+    border-radius:54px;padding:12px;
+    background:linear-gradient(160deg,#2b2318 0%,#0b0907 45%,#1d1710 100%);
+    box-shadow:
+      0 0 0 1px rgba(216,185,106,.6),
+      0 0 0 5px #0d0a07,
+      0 0 0 6px rgba(216,185,106,.28),
+      0 70px 130px -50px rgba(0,0,0,.95),
+      0 30px 70px -30px rgba(179,144,63,.4);
+    animation:phoneFloat 9s ease-in-out infinite;
+    will-change:transform;
+  }
+  @keyframes phoneFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+  .phone::before{
+    content:"";position:absolute;top:24px;left:50%;transform:translateX(-50%);z-index:3;
+    width:104px;height:30px;border-radius:20px;background:#050403;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
+  }
+  .phone::after{
+    content:"";position:absolute;right:-3px;top:180px;width:3px;height:70px;border-radius:2px;
+    background:rgba(216,185,106,.5);
+  }
+  .phone-screen{position:relative;width:100%;height:100%;border-radius:42px;overflow:hidden;background:#0d0a07;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+  .phone-screen iframe{width:100%;height:100%;border:0;display:block;background:#0d0a07}
+  .live-hint{
+    display:inline-flex;align-items:center;gap:10px;
+    font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--tx-dark-dim);
+  }
+  .live-hint i{width:6px;height:6px;border-radius:50%;background:var(--brass-2);box-shadow:0 0 12px var(--brass-2);animation:pulseDot 2s ease-in-out infinite}
+  @keyframes pulseDot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.5}}
+
+  /* ---------- services ---------- */
+  #services{
+    background:
+      radial-gradient(900px 500px at 85% 0%,rgba(179,144,63,.10),transparent 55%),
+      linear-gradient(180deg,#14100c,var(--ink-2));
+  }
+  .svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+  .svc{
+    padding:38px 30px 42px;border-radius:8px;
+    background:linear-gradient(160deg,rgba(216,185,106,.055),rgba(216,185,106,.015));
+    box-shadow:inset 0 0 0 1px var(--line-dark);
+    transition:transform .5s var(--ease),box-shadow .5s var(--ease);
+    will-change:transform;
+  }
+  .svc:hover{
+    transform:translateY(-8px);
+    box-shadow:inset 0 0 0 1px rgba(216,185,106,.4),0 30px 60px -30px rgba(0,0,0,.7);
+  }
+  .svc-ico{
+    width:54px;height:54px;border-radius:50%;
+    display:grid;place-items:center;margin-bottom:26px;
+    box-shadow:inset 0 0 0 1px rgba(216,185,106,.45);
+    color:var(--brass-2);
+    transition:transform .5s var(--ease);
+  }
+  .svc:hover .svc-ico{transform:rotate(-8deg) scale(1.06)}
+  .svc h3{font-size:21px;letter-spacing:-.01em;margin-bottom:12px;font-weight:600}
+  .svc p{font-size:14.5px;color:var(--tx-dark-dim);line-height:1.75}
+
+  /* ---------- process ---------- */
+  #process{background:linear-gradient(180deg,var(--cream-2),var(--paper))}
+  .proc{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:34px;margin-top:20px}
+  .proc-line{
+    position:absolute;top:31px;left:calc(12.5% );right:calc(12.5%);height:1px;
+    background:rgba(138,111,55,.25);
+  }
+  .proc-line i{
+    position:absolute;inset:0;background:var(--brass-dim);
+    transform:scaleX(0);transform-origin:left;display:block;
+    transition:transform .1s linear;
+  }
+  .step{position:relative;text-align:left}
+  .step-no{
+    width:62px;height:62px;border-radius:50%;
+    display:grid;place-items:center;margin-bottom:24px;
+    background:var(--paper);
+    box-shadow:inset 0 0 0 1px rgba(138,111,55,.5);
+    font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--brass-dim);
+    position:relative;z-index:1;
+    transition:transform .5s var(--ease);
+  }
+  .step:hover .step-no{transform:scale(1.08)}
+  .step h3{font-size:20px;margin-bottom:10px;font-weight:600}
+  .step p{font-size:14.5px;color:var(--tx-light-dim)}
+
+  /* ---------- demo band ---------- */
+  #demo{
+    background:
+      radial-gradient(800px 420px at 15% 20%,rgba(216,185,106,.13),transparent 60%),
+      linear-gradient(160deg,#181209,#211a10 60%,#181209);
+  }
+  .demo-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:70px;align-items:center}
+  .demo-steps{list-style:none;display:flex;flex-direction:column;gap:18px;margin:34px 0 40px}
+  .demo-steps li{
+    display:flex;align-items:center;gap:18px;
+    padding:18px 22px;border-radius:10px;
+    background:rgba(216,185,106,.05);
+    box-shadow:inset 0 0 0 1px var(--line-dark);
+    transition:transform .45s var(--ease),box-shadow .45s var(--ease);
+  }
+  .demo-steps li:hover{transform:translateX(8px);box-shadow:inset 0 0 0 1px rgba(216,185,106,.4)}
+  .demo-steps .n{
+    font-family:'Playfair Display',serif;font-size:20px;color:var(--brass-2);
+    width:34px;height:34px;flex:none;display:grid;place-items:center;
+    border-radius:50%;box-shadow:inset 0 0 0 1px rgba(216,185,106,.4);
+  }
+  .demo-steps p{font-size:15.5px}
+  .demo-steps small{display:block;font-size:13px;color:var(--tx-dark-dim)}
+  .demo-badge{
+    display:inline-flex;align-items:center;gap:10px;margin-left:20px;
+    font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--tx-dark-dim);
+  }
+  .demo-art{position:relative}
+  .demo-art .frame{position:relative;animation:float2 10s ease-in-out infinite;width:min(360px,86%);margin-inline:auto}
+  .qr-card{
+    position:absolute;left:4%;bottom:-30px;z-index:2;
+    width:148px;padding:12px 12px 11px;border-radius:14px;
+    background:#fdfcf8;text-align:center;text-decoration:none;
+    box-shadow:0 0 0 1px rgba(138,111,55,.35),0 26px 48px -18px rgba(0,0,0,.75);
+    animation:floatQr 8s ease-in-out infinite;
+    transition:transform .4s var(--ease);will-change:transform;
+  }
+  @keyframes floatQr{
+    0%,100%{transform:rotate(-5deg) translateY(0)}
+    50%{transform:rotate(-6.5deg) translateY(-10px)}
+  }
+  .qr-card:hover,.qr-card:focus-visible{animation-play-state:paused;transform:rotate(0deg) scale(1.06)}
+  .qr-card img{width:100%;display:block;border-radius:6px}
+  .qr-card span{
+    display:block;margin-top:8px;
+    font-size:9.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#3b332a;
+  }
+
+  /* ---------- contact ---------- */
+  #contact{
+    background:
+      radial-gradient(1000px 560px at 80% 100%,rgba(179,144,63,.12),transparent 60%),
+      linear-gradient(180deg,var(--ink-2),#120e0a);
+  }
+  .contact-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:80px}
+  .contact-side p{color:var(--tx-dark-dim);margin:18px 0 34px;max-width:44ch}
+  .contact-alt{display:flex;flex-direction:column;gap:16px;font-size:14.5px}
+  .contact-alt a{
+    display:inline-flex;align-items:center;gap:12px;color:var(--tx-dark);text-decoration:none;
+    transition:transform .35s var(--ease),color .3s ease;width:fit-content;
+  }
+  .contact-alt a:hover{transform:translateX(6px);color:var(--brass-2)}
+  .contact-alt svg{color:var(--brass-2);flex:none}
+  form{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .field{display:flex;flex-direction:column;gap:9px}
+  .field.full{grid-column:1/-1}
+  .field label{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--tx-dark-dim)}
+  .field input,.field textarea{
+    background:rgba(216,185,106,.045);
+    border:none;border-radius:8px;
+    box-shadow:inset 0 0 0 1px var(--line-dark);
+    padding:16px 18px;color:var(--tx-dark);
+    font-family:'Inter',sans-serif;font-size:15px;
+    transition:box-shadow .3s ease;
+  }
+  .field input:hover,.field textarea:hover{box-shadow:inset 0 0 0 1px rgba(216,185,106,.35)}
+  .field input:focus,.field textarea:focus{outline:none;box-shadow:inset 0 0 0 1.5px var(--brass)}
+  .field textarea{resize:vertical;min-height:140px}
+  .form-foot{grid-column:1/-1;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+  .form-note{font-size:12.5px;color:var(--tx-dark-dim);letter-spacing:.03em}
+
+  /* ---------- footer ---------- */
+  footer{background:#0e0b08;padding:70px 0 40px;border-top:1px solid rgba(216,185,106,.12)}
+  .foot-grid{display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap;align-items:flex-start}
+  .foot-brand{display:flex;align-items:center;gap:14px}
+  .foot-brand img{width:64px;border-radius:12px;box-shadow:0 0 0 1px rgba(216,185,106,.2)}
+  .foot-tag{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--tx-dark-dim);margin-top:6px}
+  .foot-meta{font-size:13.5px;color:var(--tx-dark-dim);display:flex;flex-direction:column;gap:8px}
+  .foot-meta a{color:var(--tx-dark);text-decoration:none;transition:color .3s ease}
+  .foot-meta a:hover{color:var(--brass-2)}
+  .foot-bottom{
+    margin-top:54px;padding-top:26px;border-top:1px solid rgba(216,185,106,.1);
+    display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    font-size:12.5px;color:rgba(239,231,214,.4);letter-spacing:.04em;
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:1020px){
+    .svc-grid{grid-template-columns:repeat(2,1fr)}
+    .live-grid{grid-template-columns:1fr;gap:54px}
+    .live-art::before{width:380px;height:380px}
+    .hero-grid{grid-template-columns:1fr;gap:40px}
+    .hero-art{height:460px;margin-top:10px}
+    .frame-main{right:2%}
+    .contact-grid,.demo-grid{grid-template-columns:1fr;gap:50px}
+    .demo-art{margin-bottom:26px}
+  }
+  @media (max-width:760px){
+    .qr-card{width:124px;left:0;bottom:-22px}
+    .sect{padding:84px 0}
+    .nav-links{display:none}
+    nav .bar{padding:12px 0}
+    nav .btn-sm{padding:11px 18px;font-size:12px;letter-spacing:.04em}
+    .brand-mark{width:50px;height:50px}
+    .menu-inner{grid-template-columns:1fr;gap:44px;align-content:center}
+    .menu-links a{font-size:clamp(32px,9vw,44px);gap:16px}
+    .menu-side{flex-direction:column;gap:18px}
+    .menu-side img{display:none}
+    .menu-close{top:18px;right:4vw;width:48px;height:48px}
+    .hero{padding-top:110px}
+    .hero-art{order:2;height:380px;min-height:340px;margin-top:26px}
+    .hero-scroll{display:none}
+    .frame-back{left:2%}
+    .masonry{
+      display:flex;overflow-x:auto;gap:18px;
+      scroll-snap-type:x mandatory;
+      padding:6px 4vw 26px;margin-inline:-4vw;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+    }
+    .masonry::-webkit-scrollbar{display:none}
+    .m-col{flex-direction:row;gap:18px;transform:none!important}
+    .piece{flex:none;width:min(78vw,340px);scroll-snap-align:center}
+    .gallery-hint{display:block}
+    .svc-grid{grid-template-columns:1fr}
+    .proc{grid-template-columns:1fr;gap:44px}
+    .proc-line{left:31px;right:auto;top:8px;bottom:8px;width:1px;height:auto}
+    .proc-line i{transform:scaleY(0);transform-origin:top}
+    .step{padding-left:96px}
+    .step-no{position:absolute;left:0;top:0}
+    form{grid-template-columns:1fr}
+    .demo-badge{margin:18px 0 0}
+  }
+  @media (max-width:430px){
+    .brand-name{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+    .rv{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="wrap bar">
+    <button class="brand" id="menuBtn" type="button" aria-label="Отвори менюто" aria-expanded="false" aria-controls="menuOverlay">
+      <span class="brand-mark" role="img" aria-hidden="true"></span>
+      <span>
+        <span class="brand-name">MENUFRAME<em>STUDIO</em></span>
+        <span class="brand-hint">Меню</span>
+      </span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="#portfolio">Портфолио</a></li>
+      <li><a href="#live">Живо демо</a></li>
+      <li><a href="#services">Услуги</a></li>
+      <li><a href="#process">Процес</a></li>
+      <li><a href="#contact">Контакт</a></li>
+    </ul>
+    <a class="btn btn-gold btn-sm magnetic" href="#demo">Безплатна демонстрация</a>
+  </div>
+</nav>
+
+<!-- ============ FULL-SCREEN MENU ============ -->
+<div class="menu-overlay" id="menuOverlay" role="dialog" aria-modal="true" aria-label="Навигация">
+  <button class="menu-close" id="menuClose" type="button" aria-label="Затвори менюто">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </button>
+  <div class="menu-inner">
+    <ul class="menu-links">
+      <li><a href="#top"><i>01</i>Начало</a></li>
+      <li><a href="#portfolio"><i>02</i>Портфолио</a></li>
+      <li><a href="#live"><i>03</i>Живо демо</a></li>
+      <li><a href="#services"><i>04</i>Услуги</a></li>
+      <li><a href="#process"><i>05</i>Процес</a></li>
+      <li><a href="#contact"><i>06</i>Контакт</a></li>
+    </ul>
+    <div class="menu-side">
+      <img src="assets/logo.jpg" alt="MenuFrame Studio лого" style="width:110px;border-radius:18px;box-shadow:0 0 0 1.5px rgba(216,185,106,.4),0 20px 40px -18px rgba(0,0,0,.8)">
+      <p class="foot-tag">„Меню, което се избира с очите."</p>
+      <a class="btn btn-gold magnetic" href="#demo" style="width:fit-content">
+        Безплатна демонстрация
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a href="https://www.instagram.com/menuframe.studio.bg" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;color:var(--tx-dark-dim);text-decoration:none;font-size:14px">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#d8b96a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+        @menuframe.studio.bg
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow rv">Студио за дизайн на менюта</span>
+      <h1 class="display rv rv-d1">Менюто е най&#8209;добрият <span class="gold">продавач</span> на вашия ресторант.</h1>
+      <p class="lead rv rv-d2">Меню, което се избира с очите. Създаваме дизайн, професионални снимки и QR дигитални менюта, които превръщат разглеждането в поръчка.</p>
+      <div class="hero-cta rv rv-d3">
+        <a class="btn btn-gold magnetic" href="#demo">
+          Заяви безплатна демонстрация
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="btn btn-ghost magnetic" href="#portfolio">Виж портфолио</a>
+      </div>
+      <p class="hero-note rv rv-d4">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d8b96a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        Без ангажимент. Виждате примерен дизайн, преди да решите.
+      </p>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="frame frame-back px" data-depth="0.06">
+        <div class="flip" data-pool="menu-desserts.jpeg,menu-italian.jpg,promo-qr.jpg,promo-tablet.jpeg">
+          <img class="face f-front" src="assets/menu-desserts.jpeg" alt="">
+          <img class="face f-rear" src="assets/menu-italian.jpg" alt="">
+        </div>
+      </div>
+      <div class="frame frame-main px" data-depth="0.12">
+        <div class="flip" data-pool="menu-sushi.jpeg,menu-elegant.jpg,menu-american.jpg,menu-bubble.jpeg">
+          <img class="face f-front" src="assets/menu-sushi.jpeg" alt="">
+          <img class="face f-rear" src="assets/menu-elegant.jpg" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+  <a class="hero-scroll" href="#portfolio">Разгледай<span class="dot"></span></a>
+</header>
+
+<!-- ============ PORTFOLIO ============ -->
+<section class="sect light" id="portfolio">
+  <div class="wrap">
+    <div class="sect-head">
+      <span class="eyebrow rv">Портфолио</span>
+      <h2 class="display rv rv-d1">Менюта, подредени като галерия.</h2>
+      <p class="rv rv-d2">Всеки проект е демонстрационен дизайн от студиото, преди адаптация към конкретен ресторант. Реалните клиентски проекти ще бъдат добавени тук.</p>
+    </div>
+    <div class="masonry">
+      <div class="m-col">
+        <figure class="piece rv"><img src="assets/menu-sushi.jpeg" alt="Дигитално меню в японски стил" loading="lazy">
+          <figcaption><span>Японски стил</span><span>QR меню</span></figcaption></figure>
+        <figure class="piece rv rv-d2"><img src="assets/menu-italian.jpg" alt="Италианско меню, пица и паста" loading="lazy">
+          <figcaption><span>Италианско меню</span><span>Принт меню</span></figcaption></figure>
+        <figure class="piece rv rv-d3"><img src="assets/promo-demo.jpeg" alt="Безплатна демонстрация, примерен дизайн на телефон" loading="lazy">
+          <figcaption><span>Демонстрация</span><span>Кампания</span></figcaption></figure>
+      </div>
+      <div class="m-col">
+        <figure class="piece rv rv-d1"><img src="assets/menu-desserts.jpeg" alt="Меню за сладкарница в парижки стил" loading="lazy">
+          <figcaption><span>Сладки изкушения</span><span>Принт меню</span></figcaption></figure>
+        <figure class="piece rv rv-d2"><img src="assets/menu-elegant.jpg" alt="Елегантно меню със златна типография" loading="lazy">
+          <figcaption><span>Елегантно меню</span><span>Принт меню</span></figcaption></figure>
+        <figure class="piece rv rv-d3"><img src="assets/promo-process.jpeg" alt="Как работим, четири стъпки" loading="lazy">
+          <figcaption><span>Как работим</span><span>Кампания</span></figcaption></figure>
+        <figure class="piece rv rv-d4"><img src="assets/promo-tablet.jpeg" alt="Дигитално меню на таблет" loading="lazy">
+          <figcaption><span>Меню с очите</span><span>Кампания</span></figcaption></figure>
+      </div>
+      <div class="m-col">
+        <figure class="piece rv rv-d2"><img src="assets/menu-bubble.jpeg" alt="Цветно меню за bubble tea напитки" loading="lazy">
+          <figcaption><span>Bubble Drinks</span><span>Принт меню</span></figcaption></figure>
+        <figure class="piece rv rv-d3"><img src="assets/menu-american.jpg" alt="Американско меню, бургери и барбекю" loading="lazy">
+          <figcaption><span>Американско меню</span><span>Принт меню</span></figcaption></figure>
+        <figure class="piece rv rv-d4"><img src="assets/promo-qr.jpg" alt="QR меню, сканирай, разгледай, избери" loading="lazy">
+          <figcaption><span>QR Меню</span><span>Кампания</span></figcaption></figure>
+      </div>
+    </div>
+    <p class="gallery-hint">Плъзни настрани, за да разгледаш →</p>
+  </div>
+</section>
+
+<!-- ============ LIVE DEMO ============ -->
+<section class="sect" id="live">
+  <div class="wrap live-grid">
+    <div>
+      <span class="eyebrow rv">Живо демо</span>
+      <h2 class="display rv rv-d1">Пробвайте меню, което <span class="gold" style="font-style:italic;background:linear-gradient(115deg,#e6cd8b,#b3903f 55%,#e0c47c);-webkit-background-clip:text;background-clip:text;color:transparent">работи</span>.</h2>
+      <p class="lead rv rv-d2">Това е истинско QR меню, не снимка. Сменете категорията, отворете ястие, добавете го към поръчката и превключете на английски. Точно това получава гостът на масата.</p>
+      <ul class="live-points">
+        <li class="rv rv-d2">Категории в прозрачен стъклен таб бар</li>
+        <li class="rv rv-d3">Снимки, описания, съставки и алергени</li>
+        <li class="rv rv-d3">Поръчка от масата и повикване на сервитьор</li>
+        <li class="rv rv-d4">Български и английски с един клик</li>
+      </ul>
+      <div class="hero-cta rv rv-d4">
+        <a class="btn btn-gold magnetic" href="demo.html" target="_blank" rel="noopener">
+          Отвори на цял екран
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
+        </a>
+        <a class="btn btn-ghost magnetic" href="#demo">Искам такова меню</a>
+      </div>
+    </div>
+    <div class="live-art rv rv-d2">
+      <div class="phone">
+        <div class="phone-screen">
+          <iframe src="demo.html?embed=1" title="Живо демонстрационно меню" loading="lazy"></iframe>
+        </div>
+      </div>
+      <p class="live-hint"><i></i>Пробвайте направо тук, докоснете таб или ястие</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section class="sect" id="services">
+  <div class="wrap">
+    <div class="sect-head">
+      <span class="eyebrow rv">Услуги</span>
+      <h2 class="display rv rv-d1">Всичко, което едно меню трябва да умее.</h2>
+      <p class="rv rv-d2">От първата снимка до финалните файлове за печат, всяка стъпка е направена с внимание към детайла.</p>
+    </div>
+    <div class="svc-grid">
+      <article class="svc rv">
+        <div class="svc-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></div>
+        <h3>Дизайн на меню</h3>
+        <p>Изграждаме менюто като дизайн обект, с типография, подредба и акценти, които водят окото към правилните ястия.</p>
+      </article>
+      <article class="svc rv rv-d1">
+        <div class="svc-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+        <h3>Професионални снимки</h3>
+        <p>Заснемаме ястията така, че да се избират с очите, с апетитна светлина и стил, отговарящ на вашата кухня.</p>
+      </article>
+      <article class="svc rv rv-d2">
+        <div class="svc-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14h1M14 20h1M18 18h3v3h-3z"/></svg></div>
+        <h3>QR дигитално меню</h3>
+        <p>Елегантно дигитално меню с QR код на масата, което се отваря мигновено и се обновява без нов печат.</p>
+      </article>
+      <article class="svc rv rv-d3">
+        <div class="svc-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></div>
+        <h3>Редизайн и сезонни обновления</h3>
+        <p>Освежаваме съществуващи менюта и поддържаме сезонни промени, така че менюто винаги да е актуално и подредено.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROCESS ============ -->
+<section class="sect light" id="process">
+  <div class="wrap">
+    <div class="sect-head">
+      <span class="eyebrow rv">Как работим</span>
+      <h2 class="display rv rv-d1">Четири стъпки до готово меню.</h2>
+      <p class="rv rv-d2">Целият процес минава онлайн, без срещи и загубено време за вашия екип.</p>
+    </div>
+    <div class="proc">
+      <div class="proc-line" aria-hidden="true"><i id="procFill"></i></div>
+      <div class="step rv">
+        <div class="step-no serif">01</div>
+        <h3>Изпращате менюто</h3>
+        <p>Пращате ни текущото си меню, файл, снимка или линк, заедно с предпочитан стил.</p>
+      </div>
+      <div class="step rv rv-d1">
+        <div class="step-no serif">02</div>
+        <h3>Създаваме дизайна</h3>
+        <p>Изграждаме дизайна и снимките, съобразени с бранда и атмосферата на вашето заведение.</p>
+      </div>
+      <div class="step rv rv-d2">
+        <div class="step-no serif">03</div>
+        <h3>Получавате QR код</h3>
+        <p>Дигиталното меню е готово с QR код за масите, а промените по него са бързи и лесни.</p>
+      </div>
+      <div class="step rv rv-d3">
+        <div class="step-no serif">04</div>
+        <h3>Менюто е готово</h3>
+        <p>Получавате финалните файлове, готови за печат, и менюто започва да продава вместо вас.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEMO BAND ============ -->
+<section class="sect" id="demo">
+  <div class="wrap demo-grid">
+    <div>
+      <span class="eyebrow rv">Безплатна демонстрация</span>
+      <h2 class="display rv rv-d1" style="font-size:clamp(32px,3.6vw,50px);margin:22px 0 8px">Вижте как би изглеждало вашето меню.</h2>
+      <ul class="demo-steps">
+        <li class="rv"><span class="n serif">1</span><p>Изпратете ни меню или линк<small>Работим с това, което вече имате.</small></p></li>
+        <li class="rv rv-d1"><span class="n serif">2</span><p>Изберете предпочитан стил<small>Елегантен, модерен, класически или по ваша идея.</small></p></li>
+        <li class="rv rv-d2"><span class="n serif">3</span><p>Получавате примерен дизайн<small>Безплатно и без ангажимент да продължите.</small></p></li>
+      </ul>
+      <div class="rv rv-d3" style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
+        <a class="btn btn-gold magnetic" href="https://www.instagram.com/menuframe.studio.bg" target="_blank" rel="noopener">
+          Пиши ни на лично
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+        </a>
+        <span class="demo-badge">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#d8b96a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          Без ангажимент
+        </span>
+      </div>
+    </div>
+    <div class="demo-art rv rv-d2">
+      <div class="frame" aria-hidden="true"><img src="assets/menu-bubble.jpeg" alt=""></div>
+      <a class="qr-card" href="https://www.instagram.com/menuframe.studio.bg" target="_blank" rel="noopener">
+        <img src="assets/qr-instagram.png" alt="QR код към Instagram на MenuFrame Studio">
+        <span>Сканирай и ни пиши</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="sect" id="contact">
+  <div class="wrap contact-grid">
+    <div class="contact-side">
+      <span class="eyebrow rv">Контакт</span>
+      <h2 class="display rv rv-d1" style="font-size:clamp(32px,3.4vw,46px);margin-top:22px">Готови ли сте менюто ви да заработи?</h2>
+      <p class="rv rv-d2">Пишете ни и ще получите отговор с примерен дизайн за вашето заведение. Най-бързо отговаряме в Instagram.</p>
+      <div class="contact-alt rv rv-d3">
+        <a href="https://www.instagram.com/menuframe.studio.bg" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+          @menuframe.studio.bg
+        </a>
+        <a href="#" aria-disabled="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg>
+          [имейл, ще бъде добавен]
+        </a>
+        <a href="#" aria-disabled="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.6 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+          [телефон, ще бъде добавен]
+        </a>
+      </div>
+    </div>
+    <form class="rv rv-d2" action="#" method="post" id="contactForm">
+      <div class="field">
+        <label for="f-name">Вашето име</label>
+        <input id="f-name" name="name" type="text" autocomplete="name" required>
+      </div>
+      <div class="field">
+        <label for="f-rest">Ресторант</label>
+        <input id="f-rest" name="restaurant" type="text" autocomplete="organization" required>
+      </div>
+      <div class="field full">
+        <label for="f-email">Имейл</label>
+        <input id="f-email" name="email" type="email" autocomplete="email" required>
+      </div>
+      <div class="field full">
+        <label for="f-msg">Съобщение</label>
+        <textarea id="f-msg" name="message" placeholder="Разкажете ни за заведението и менюто, което искате."></textarea>
+      </div>
+      <div class="form-foot">
+        <button class="btn btn-gold magnetic" type="submit">
+          Изпрати запитване
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        </button>
+        <span class="form-note">[Формата ще бъде свързана към имейл при качване на сайта.]</span>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ LIGHTBOX ============ -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Разглеждане на портфолио">
+  <div class="lb-stage" id="lbStage"></div>
+  <span class="lb-count" id="lbCount"></span>
+  <button class="lb-close" id="lbClose" type="button" aria-label="Затвори">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </button>
+  <button class="lb-nav lb-prev" id="lbPrev" type="button" aria-label="Предишен">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+  </button>
+  <button class="lb-nav lb-next" id="lbNext" type="button" aria-label="Следващ">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </button>
+  <div class="lb-cap" id="lbCap"></div>
+  <span class="lb-hint">Скрол или стрелки за следващо</span>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-brand">
+          <img src="assets/logo.jpg" alt="MenuFrame Studio лого">
+          <div>
+            <div class="brand-name" style="font-size:16px">MENUFRAME<em>STUDIO</em></div>
+          </div>
+        </div>
+        <p class="foot-tag">„Меню, което се избира с очите."</p>
+      </div>
+      <div class="foot-meta">
+        <strong style="color:var(--tx-dark);letter-spacing:.16em;font-size:12px">НАВИГАЦИЯ</strong>
+        <a href="#portfolio">Портфолио</a>
+        <a href="#services">Услуги</a>
+        <a href="#process">Процес</a>
+        <a href="#contact">Контакт</a>
+      </div>
+      <div class="foot-meta">
+        <strong style="color:var(--tx-dark);letter-spacing:.16em;font-size:12px">КОНТАКТ</strong>
+        <a href="https://www.instagram.com/menuframe.studio.bg" target="_blank" rel="noopener">Instagram: @menuframe.studio.bg</a>
+        <span>[имейл, ще бъде добавен]</span>
+        <span>[телефон и град, ще бъдат добавени]</span>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 MenuFrame Studio. Всички права запазени.</span>
+      <span>Дизайн, снимки и QR менюта за ресторанти</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* nav background on scroll */
+  const nav = document.getElementById('nav');
+  const onScrollNav = () => nav.classList.toggle('scrolled', scrollY > 40);
+  addEventListener('scroll', onScrollNav, {passive:true}); onScrollNav();
+
+  /* full-screen menu: opens on logo click */
+  const overlay = document.getElementById('menuOverlay');
+  const menuBtn = document.getElementById('menuBtn');
+  const menuClose = document.getElementById('menuClose');
+  const setMenu = (open) => {
+    overlay.classList.toggle('open', open);
+    document.body.classList.toggle('menu-open', open);
+    menuBtn.setAttribute('aria-expanded', open);
+    if(open) menuClose.focus(); else menuBtn.focus();
+  };
+  menuBtn.addEventListener('click', () => setMenu(!overlay.classList.contains('open')));
+  menuClose.addEventListener('click', () => setMenu(false));
+  overlay.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+  addEventListener('keydown', e => { if(e.key === 'Escape' && overlay.classList.contains('open')) setMenu(false); });
+
+  /* reveal on scroll */
+  const io = new IntersectionObserver(entries=>{
+    for(const e of entries){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }
+  },{threshold:.14,rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+  /* ---------- lightbox gallery ---------- */
+  const pieces = [...document.querySelectorAll('.piece')];
+  const lb = document.getElementById('lightbox');
+  const lbStage = document.getElementById('lbStage');
+  const lbCap = document.getElementById('lbCap');
+  const lbCount = document.getElementById('lbCount');
+  let cur = 0, curFrame = null, navBusy = false;
+
+  const fitSize = (nw, nh) => {
+    const pad = innerWidth < 760 ? 10 : 14;
+    const maxW = Math.min(innerWidth * .86, 960);
+    const maxH = innerHeight * (innerWidth < 760 ? .60 : .72);
+    const r = Math.min((maxW - 2*pad)/nw, (maxH - 2*pad)/nh);
+    return { w: nw*r + 2*pad, h: nh*r + 2*pad };
+  };
+  const buildFrame = (i) => {
+    const src = pieces[i].querySelector('img');
+    const f = document.createElement('div');
+    f.className = 'lb-frame';
+    const im = new Image();
+    im.src = src.currentSrc || src.src;
+    im.alt = src.alt;
+    f.appendChild(im);
+    const { w, h } = fitSize(src.naturalWidth || 4, src.naturalHeight || 5);
+    f.style.width = w + 'px';
+    f.style.height = h + 'px';
+    return f;
+  };
+  const setCap = (i) => {
+    const s = pieces[i].querySelectorAll('figcaption span');
+    lbCap.innerHTML = `<em>${s[0].textContent}</em><span>${s[1].textContent}</span>`;
+    lbCount.textContent = String(i+1).padStart(2,'0') + ' — ' + String(pieces.length).padStart(2,'0');
+    const pre = new Image(); pre.src = pieces[(i+1)%pieces.length].querySelector('img').src;
+  };
+  const openLb = (i) => {
+    cur = i;
+    lb.classList.add('open');
+    document.body.classList.add('menu-open');
+    lbStage.innerHTML = '';
+    const f = buildFrame(i); curFrame = f;
+    lbStage.appendChild(f);
+    setCap(i);
+    const t = pieces[i].getBoundingClientRect();
+    requestAnimationFrame(() => {
+      const r = f.getBoundingClientRect();
+      const dx = (t.left + t.width/2) - (r.left + r.width/2);
+      const dy = (t.top + t.height/2) - (r.top + r.height/2);
+      const s = t.width / r.width;
+      f.style.transition = 'none';
+      f.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(${s})`;
+      requestAnimationFrame(() => {
+        f.style.transition = '';
+        f.style.transform = 'translate(-50%,-50%)';
+      });
+    });
+  };
+  const closeLb = () => {
+    if(!curFrame) return;
+    const f = curFrame;
+    const t = pieces[cur].getBoundingClientRect();
+    const r = f.getBoundingClientRect();
+    const onScreen = t.bottom > 0 && t.top < innerHeight && t.right > 0 && t.left < innerWidth;
+    if(onScreen){
+      const dx = (t.left + t.width/2) - (r.left + r.width/2);
+      const dy = (t.top + t.height/2) - (r.top + r.height/2);
+      f.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(${t.width / r.width})`;
+      f.style.opacity = '.1';
+    } else {
+      f.style.transform = 'translate(-50%,-50%) scale(.92)';
+      f.style.opacity = '0';
+    }
+    lb.classList.remove('open');
+    document.body.classList.remove('menu-open');
+    curFrame = null;
+    setTimeout(() => { if(!lb.classList.contains('open')) lbStage.innerHTML = ''; }, 520);
+  };
+  const navLb = (dir) => {
+    if(navBusy || !lb.classList.contains('open')) return;
+    navBusy = true;
+    const ni = (cur + dir + pieces.length) % pieces.length;
+    const old = curFrame;
+    const f = buildFrame(ni);
+    f.style.transition = 'none';
+    f.style.transform = `translate(calc(-50% + ${dir*110}px), -50%) scale(.94)`;
+    f.style.opacity = '0';
+    lbStage.appendChild(f);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      f.style.transition = '';
+      f.style.transform = 'translate(-50%,-50%)';
+      f.style.opacity = '1';
+      if(old){
+        old.style.transform = `translate(calc(-50% + ${-dir*110}px), -50%) scale(.94)`;
+        old.style.opacity = '0';
+      }
+    }));
+    setTimeout(() => { old && old.remove(); navBusy = false; }, 600);
+    cur = ni; curFrame = f; setCap(ni);
+  };
+
+  pieces.forEach((p, i) => {
+    p.setAttribute('role','button');
+    p.setAttribute('tabindex','0');
+    p.setAttribute('aria-label','Разгледай в голям размер');
+    p.addEventListener('click', () => openLb(i));
+    p.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openLb(i); } });
+  });
+  document.getElementById('lbClose').addEventListener('click', closeLb);
+  document.getElementById('lbPrev').addEventListener('click', () => navLb(-1));
+  document.getElementById('lbNext').addEventListener('click', () => navLb(1));
+  lbStage.addEventListener('click', e => { if(e.target === lbStage) closeLb(); });
+  addEventListener('keydown', e => {
+    if(!lb.classList.contains('open')) return;
+    if(e.key === 'Escape') closeLb();
+    if(e.key === 'ArrowRight') navLb(1);
+    if(e.key === 'ArrowLeft') navLb(-1);
+  });
+  let wheelAcc = 0, wheelLock = false;
+  lb.addEventListener('wheel', e => {
+    e.preventDefault();
+    if(wheelLock) return;
+    wheelAcc += e.deltaY + e.deltaX;
+    if(Math.abs(wheelAcc) > 50){
+      navLb(wheelAcc > 0 ? 1 : -1);
+      wheelAcc = 0; wheelLock = true;
+      setTimeout(() => wheelLock = false, 550);
+    }
+  }, {passive:false});
+  let touchX = null;
+  lb.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, {passive:true});
+  lb.addEventListener('touchend', e => {
+    if(touchX === null) return;
+    const d = e.changedTouches[0].clientX - touchX;
+    if(Math.abs(d) > 45) navLb(d < 0 ? 1 : -1);
+    touchX = null;
+  }, {passive:true});
+
+  if(reduce) return;
+
+  /* hero frames: periodic 3D flip through the design pool */
+  const flips = [...document.querySelectorAll('.hero-art .flip')].map(el => {
+    const pool = el.dataset.pool.split(',');
+    pool.forEach(src => { const im = new Image(); im.src = 'assets/' + src; });
+    return { el, pool, idx: 1, angle: 0 };
+  });
+  const doFlip = (s) => {
+    s.angle += 180;
+    s.el.style.transform = `rotateX(${s.angle}deg)`;
+    setTimeout(() => {
+      s.idx = (s.idx + 1) % s.pool.length;
+      const hidden = (s.angle / 180) % 2 === 1 ? '.f-front' : '.f-rear';
+      s.el.querySelector(hidden).src = 'assets/' + s.pool[s.idx];
+    }, 1300);
+  };
+  if(flips.length){
+    setInterval(() => flips.forEach(doFlip), 5500);
+  }
+
+  /* hero parallax (transform only, rAF-throttled) */
+  const px = document.querySelectorAll('.px');
+  let ticking = false;
+  addEventListener('scroll', ()=>{
+    if(ticking) return; ticking = true;
+    requestAnimationFrame(()=>{
+      const y = scrollY;
+      px.forEach(el=>{
+        const d = parseFloat(el.dataset.depth||0.08);
+        el.style.setProperty('--py', (y*d)+'px');
+        el.style.translate = '0 ' + (y*d)+'px';
+      });
+      ticking = false;
+    });
+  },{passive:true});
+
+  /* process line draws with scroll */
+  const fill = document.getElementById('procFill');
+  const proc = document.querySelector('.proc');
+  if(fill && proc){
+    let t2=false;
+    const drawLine = ()=>{
+      const r = proc.getBoundingClientRect();
+      const vh = innerHeight;
+      const p = Math.min(1, Math.max(0, (vh*0.85 - r.top) / (r.height + vh*0.25)));
+      const vertical = matchMedia('(max-width:760px)').matches;
+      fill.style.transform = vertical ? `scaleY(${p})` : `scaleX(${p})`;
+    };
+    addEventListener('scroll', ()=>{
+      if(t2) return; t2=true;
+      requestAnimationFrame(()=>{ drawLine(); t2=false; });
+    },{passive:true});
+    drawLine();
+  }
+
+  /* magnetic buttons */
+  if(matchMedia('(pointer:fine)').matches){
+    document.querySelectorAll('.magnetic').forEach(btn=>{
+      btn.addEventListener('mousemove', e=>{
+        const r = btn.getBoundingClientRect();
+        const x = (e.clientX - r.left - r.width/2) * 0.18;
+        const y = (e.clientY - r.top - r.height/2) * 0.26;
+        btn.style.transform = `translate(${x}px,${y}px)`;
+      });
+      btn.addEventListener('mouseleave', ()=>{ btn.style.transform=''; });
+    });
+  }
+
+  /* form: placeholder handler until an email is connected */
+  const form = document.getElementById('contactForm');
+  form.addEventListener('submit', e=>{
+    e.preventDefault();
+    alert('Формата още не е свързана към имейл. Пишете ни в Instagram: @menuframe.studio.bg');
+  });
+})();
+</script>
+</body>
+</html>
