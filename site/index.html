@@ -600,7 +600,7 @@
   .field{display:flex;flex-direction:column;gap:9px}
   .field.full{grid-column:1/-1}
   .field label{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--tx-dark-dim)}
-  .field input,.field textarea{
+  .field input,.field textarea,.field select{
     background:rgba(216,185,106,.045);
     border:none;border-radius:8px;
     box-shadow:inset 0 0 0 1px var(--line-dark);
@@ -608,9 +608,17 @@
     font-family:'Inter',sans-serif;font-size:15px;
     transition:box-shadow .3s ease;
   }
-  .field input:hover,.field textarea:hover{box-shadow:inset 0 0 0 1px rgba(216,185,106,.35)}
-  .field input:focus,.field textarea:focus{outline:none;box-shadow:inset 0 0 0 1.5px var(--brass)}
+  .field input:hover,.field textarea:hover,.field select:hover{box-shadow:inset 0 0 0 1px rgba(216,185,106,.35)}
+  .field input:focus,.field textarea:focus,.field select:focus{outline:none;box-shadow:inset 0 0 0 1.5px var(--brass)}
   .field textarea{resize:vertical;min-height:140px}
+  .field select{
+    appearance:none;-webkit-appearance:none;
+    cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d8b96a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 16px center;background-size:16px;
+    padding-right:44px;
+  }
+  .field select:invalid{color:var(--tx-dark-dim)}
   .form-foot{grid-column:1/-1;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
   .form-note{font-size:12.5px;color:var(--tx-dark-dim);letter-spacing:.03em}
 
@@ -819,11 +827,10 @@
     <div>
       <span class="eyebrow rv">Живо демо</span>
       <h2 class="display rv rv-d1">Пробвайте меню, което <span class="gold" style="font-style:italic;background:linear-gradient(115deg,#e6cd8b,#b3903f 55%,#e0c47c);-webkit-background-clip:text;background-clip:text;color:transparent">работи</span>.</h2>
-      <p class="lead rv rv-d2">Това е истинско QR меню, не снимка. Сменете категорията, отворете ястие, добавете го към поръчката и превключете на английски. Точно това получава гостът на масата.</p>
+      <p class="lead rv rv-d2">Това е истинско QR меню, не снимка. Сменете категорията, отворете ястие и превключете на английски. Точно това получава гостът на масата.</p>
       <ul class="live-points">
         <li class="rv rv-d2">Категории в прозрачен стъклен таб бар</li>
         <li class="rv rv-d3">Снимки, описания, съставки и алергени</li>
-        <li class="rv rv-d3">Поръчка от масата и повикване на сервитьор</li>
         <li class="rv rv-d4">Български и английски с един клик</li>
       </ul>
       <div class="hero-cta rv rv-d4">
@@ -956,13 +963,13 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
           @menuframe.studio.bg
         </a>
-        <a href="#" aria-disabled="true">
+        <a href="mailto:menuframe.studio.bg@abv.bg">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg>
-          [имейл, ще бъде добавен]
+          menuframe.studio.bg@abv.bg
         </a>
-        <a href="#" aria-disabled="true">
+        <a href="tel:+359876913396">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.6 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
-          [телефон, ще бъде добавен]
+          0876 913 396
         </a>
       </div>
     </div>
@@ -974,6 +981,24 @@
       <div class="field">
         <label for="f-rest">Ресторант</label>
         <input id="f-rest" name="restaurant" type="text" autocomplete="organization" required>
+      </div>
+      <div class="field">
+        <label for="f-menu">Текущо меню или сайт (по желание)</label>
+        <input id="f-menu" name="currentMenuUrl" type="text" autocomplete="url" placeholder="https://...">
+      </div>
+      <div class="field">
+        <label for="f-style">Предпочитан стил</label>
+        <select id="f-style" name="preferredStyle">
+          <option value="" disabled selected>Изберете стил</option>
+          <option>Минимален</option>
+          <option>Луксозен</option>
+          <option>Модерен</option>
+          <option>Тъмен</option>
+          <option>Средиземноморски</option>
+          <option>Кежуъл</option>
+          <option>Файн дайнинг</option>
+          <option>Друго</option>
+        </select>
       </div>
       <div class="field full">
         <label for="f-email">Имейл</label>
@@ -988,7 +1013,7 @@
           Изпрати запитване
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
         </button>
-        <span class="form-note">[Формата ще бъде свързана към имейл при качване на сайта.]</span>
+        <span class="form-note" id="formNote">Отговаряме обикновено до 24 часа.</span>
       </div>
     </form>
   </div>
@@ -1034,8 +1059,8 @@
       <div class="foot-meta">
         <strong style="color:var(--tx-dark);letter-spacing:.16em;font-size:12px">КОНТАКТ</strong>
         <a href="https://www.instagram.com/menuframe.studio.bg" target="_blank" rel="noopener">Instagram: @menuframe.studio.bg</a>
-        <span>[имейл, ще бъде добавен]</span>
-        <span>[телефон и град, ще бъдат добавени]</span>
+        <a href="mailto:menuframe.studio.bg@abv.bg">menuframe.studio.bg@abv.bg</a>
+        <a href="tel:+359876913396">0876 913 396</a>
       </div>
     </div>
     <div class="foot-bottom">
@@ -1280,11 +1305,35 @@
     });
   }
 
-  /* form: placeholder handler until an email is connected */
+  /* form: submits to /api/contact (Resend email + Google Sheets row) */
   const form = document.getElementById('contactForm');
-  form.addEventListener('submit', e=>{
+  const formNote = document.getElementById('formNote');
+  const submitBtn = form.querySelector('button[type="submit"]');
+  form.addEventListener('submit', async e=>{
     e.preventDefault();
-    alert('Формата още не е свързана към имейл. Пишете ни в Instagram: @menuframe.studio.bg');
+    submitBtn.disabled = true;
+    formNote.textContent = 'Изпращане…';
+    try{
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          name: form.name.value,
+          restaurant: form.restaurant.value,
+          currentMenuUrl: form.currentMenuUrl.value,
+          preferredStyle: form.preferredStyle.value,
+          email: form.email.value,
+          message: form.message.value,
+        }),
+      });
+      if(!res.ok) throw new Error('request failed');
+      formNote.textContent = 'Благодарим! Ще се свържем с вас скоро.';
+      form.reset();
+    }catch(err){
+      formNote.textContent = 'Възникна грешка. Пишете ни в Instagram: @menuframe.studio.bg';
+    }finally{
+      submitBtn.disabled = false;
+    }
   });
 })();
 </script>
