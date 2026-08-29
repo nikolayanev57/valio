@@ -1,0 +1,8 @@
+{
+  "name": "valio-site",
+  "private": true,
+  "dependencies": {
+    "resend": "^6.22.1",
+    "googleapis": "^176.0.0"
+  }
+}

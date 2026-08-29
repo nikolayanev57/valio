@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MenuFrame Studio — Меню, което се избира с очите</title>
-<meta name="description" content="Студио за дизайн на ресторантски менюта. Дизайн, снимки и QR дигитални менюта, които продават.">
+<title id="pageTitle">MenuFrame Studio — Меню, което се избира с очите</title>
+<meta id="pageDesc" name="description" content="Студио за дизайн на ресторантски менюта. Дизайн, снимки и QR дигитални менюта, които продават.">
 <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -112,6 +112,27 @@
   }
   .nav-links a:hover,.nav-links a:focus-visible{color:var(--tx-dark)}
   .nav-links a:hover::after,.nav-links a:focus-visible::after{transform:scaleX(1)}
+
+  /* ---------- language toggle ---------- */
+  .lang{
+    position:relative;display:inline-flex;align-items:center;padding:3px;border-radius:999px;flex:none;
+    background:rgba(216,185,106,.06);
+    box-shadow:inset 0 0 0 1px rgba(216,185,106,.28);
+  }
+  .lang button{
+    position:relative;z-index:1;width:34px;height:28px;border:none;background:none;cursor:pointer;border-radius:999px;
+    font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--tx-dark-dim);
+    transition:color .35s ease;
+  }
+  .lang button[aria-pressed="true"]{color:var(--ink)}
+  .lang button:focus-visible{outline:2px solid var(--brass-2);outline-offset:2px}
+  .lang .ind{
+    position:absolute;left:3px;top:3px;width:34px;height:28px;border-radius:999px;z-index:0;
+    background:linear-gradient(135deg,#e6cd8b,#b3903f 55%,#e0c47c);
+    box-shadow:0 6px 16px -6px rgba(216,185,106,.75);
+    transition:transform .45s cubic-bezier(.34,1.4,.44,1);
+  }
+  .lang[data-l="en"] .ind{transform:translateX(34px)}
 
   /* ---------- full-screen menu overlay ---------- */
   .menu-overlay{
@@ -600,7 +621,7 @@
   .field{display:flex;flex-direction:column;gap:9px}
   .field.full{grid-column:1/-1}
   .field label{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--tx-dark-dim)}
-  .field input,.field textarea{
+  .field input,.field textarea,.field select{
     background:rgba(216,185,106,.045);
     border:none;border-radius:8px;
     box-shadow:inset 0 0 0 1px var(--line-dark);
@@ -608,9 +629,17 @@
     font-family:'Inter',sans-serif;font-size:15px;
     transition:box-shadow .3s ease;
   }
-  .field input:hover,.field textarea:hover{box-shadow:inset 0 0 0 1px rgba(216,185,106,.35)}
-  .field input:focus,.field textarea:focus{outline:none;box-shadow:inset 0 0 0 1.5px var(--brass)}
+  .field input:hover,.field textarea:hover,.field select:hover{box-shadow:inset 0 0 0 1px rgba(216,185,106,.35)}
+  .field input:focus,.field textarea:focus,.field select:focus{outline:none;box-shadow:inset 0 0 0 1.5px var(--brass)}
   .field textarea{resize:vertical;min-height:140px}
+  .field select{
+    appearance:none;-webkit-appearance:none;
+    cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d8b96a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 16px center;background-size:16px;
+    padding-right:44px;
+  }
+  .field select:invalid{color:var(--tx-dark-dim)}
   .form-foot{grid-column:1/-1;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
   .form-note{font-size:12.5px;color:var(--tx-dark-dim);letter-spacing:.03em}
 
@@ -689,43 +718,48 @@
 
 <nav id="nav">
   <div class="wrap bar">
-    <button class="brand" id="menuBtn" type="button" aria-label="Отвори менюто" aria-expanded="false" aria-controls="menuOverlay">
+    <button class="brand" id="menuBtn" type="button" aria-label="Отвори менюто" data-i18n-aria="menuBtnAria" aria-expanded="false" aria-controls="menuOverlay">
       <span class="brand-mark" role="img" aria-hidden="true"></span>
       <span>
         <span class="brand-name">MENUFRAME<em>STUDIO</em></span>
-        <span class="brand-hint">Меню</span>
+        <span class="brand-hint" data-i18n="brandHint">Меню</span>
       </span>
     </button>
     <ul class="nav-links">
-      <li><a href="#portfolio">Портфолио</a></li>
-      <li><a href="#live">Живо демо</a></li>
-      <li><a href="#services">Услуги</a></li>
-      <li><a href="#process">Процес</a></li>
-      <li><a href="#contact">Контакт</a></li>
+      <li><a href="#portfolio" data-i18n="navPortfolio">Портфолио</a></li>
+      <li><a href="#live" data-i18n="navLive">Живо демо</a></li>
+      <li><a href="#services" data-i18n="navServices">Услуги</a></li>
+      <li><a href="#process" data-i18n="navProcess">Процес</a></li>
+      <li><a href="#contact" data-i18n="navContact">Контакт</a></li>
     </ul>
-    <a class="btn btn-gold btn-sm magnetic" href="#demo">Безплатна демонстрация</a>
+    <div class="lang" id="lang" data-l="bg" role="group" aria-label="Language">
+      <span class="ind" aria-hidden="true"></span>
+      <button type="button" data-lang="bg" aria-pressed="true" lang="bg">BG</button>
+      <button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button>
+    </div>
+    <a class="btn btn-gold btn-sm magnetic" href="#demo" data-i18n="navCta">Безплатна демонстрация</a>
   </div>
 </nav>
 
 <!-- ============ FULL-SCREEN MENU ============ -->
-<div class="menu-overlay" id="menuOverlay" role="dialog" aria-modal="true" aria-label="Навигация">
-  <button class="menu-close" id="menuClose" type="button" aria-label="Затвори менюто">
+<div class="menu-overlay" id="menuOverlay" role="dialog" aria-modal="true" aria-label="Навигация" data-i18n-aria="ovAria">
+  <button class="menu-close" id="menuClose" type="button" aria-label="Затвори менюто" data-i18n-aria="ovCloseAria">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
   </button>
   <div class="menu-inner">
     <ul class="menu-links">
-      <li><a href="#top"><i>01</i>Начало</a></li>
-      <li><a href="#portfolio"><i>02</i>Портфолио</a></li>
-      <li><a href="#live"><i>03</i>Живо демо</a></li>
-      <li><a href="#services"><i>04</i>Услуги</a></li>
-      <li><a href="#process"><i>05</i>Процес</a></li>
-      <li><a href="#contact"><i>06</i>Контакт</a></li>
+      <li><a href="#top" data-i18n-html="ovHome"><i>01</i>Начало</a></li>
+      <li><a href="#portfolio" data-i18n-html="ovPortfolio"><i>02</i>Портфолио</a></li>
+      <li><a href="#live" data-i18n-html="ovLive"><i>03</i>Живо демо</a></li>
+      <li><a href="#services" data-i18n-html="ovServices"><i>04</i>Услуги</a></li>
+      <li><a href="#process" data-i18n-html="ovProcess"><i>05</i>Процес</a></li>
+      <li><a href="#contact" data-i18n-html="ovContact"><i>06</i>Контакт</a></li>
     </ul>
     <div class="menu-side">
-      <img src="assets/logo.jpg" alt="MenuFrame Studio лого" style="width:110px;border-radius:18px;box-shadow:0 0 0 1.5px rgba(216,185,106,.4),0 20px 40px -18px rgba(0,0,0,.8)">
-      <p class="foot-tag">„Меню, което се избира с очите."</p>
+      <img src="assets/logo.jpg" alt="MenuFrame Studio лого" data-i18n-aria="logoAlt" style="width:110px;border-radius:18px;box-shadow:0 0 0 1.5px rgba(216,185,106,.4),0 20px 40px -18px rgba(0,0,0,.8)">
+      <p class="foot-tag" data-i18n="tagline">„Меню, което се избира с очите."</p>
       <a class="btn btn-gold magnetic" href="#demo" style="width:fit-content">
-        Безплатна демонстрация
+        <span data-i18n="ovCta">Безплатна демонстрация</span>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
       <a href="https://www.instagram.com/menuframe.studio.bg" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;color:var(--tx-dark-dim);text-decoration:none;font-size:14px">
@@ -740,19 +774,19 @@
 <header class="hero" id="top">
   <div class="wrap hero-grid">
     <div>
-      <span class="eyebrow rv">Студио за дизайн на менюта</span>
-      <h1 class="display rv rv-d1">Менюто е най&#8209;добрият <span class="gold">продавач</span> на вашия ресторант.</h1>
-      <p class="lead rv rv-d2">Меню, което се избира с очите. Създаваме дизайн, професионални снимки и QR дигитални менюта, които превръщат разглеждането в поръчка.</p>
+      <span class="eyebrow rv" data-i18n="heroEyebrow">Студио за дизайн на менюта</span>
+      <h1 class="display rv rv-d1" data-i18n-html="heroH1">Менюто е най&#8209;добрият <span class="gold">продавач</span> на вашия ресторант.</h1>
+      <p class="lead rv rv-d2" data-i18n="heroLead">Меню, което се избира с очите. Създаваме дизайн, професионални снимки и QR дигитални менюта, които превръщат разглеждането в поръчка.</p>
       <div class="hero-cta rv rv-d3">
         <a class="btn btn-gold magnetic" href="#demo">
-          Заяви безплатна демонстрация
+          <span data-i18n="heroCta1">Заяви безплатна демонстрация</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </a>
-        <a class="btn btn-ghost magnetic" href="#portfolio">Виж портфолио</a>
+        <a class="btn btn-ghost magnetic" href="#portfolio" data-i18n="heroCta2">Виж портфолио</a>
       </div>
       <p class="hero-note rv rv-d4">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d8b96a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-        Без ангажимент. Виждате примерен дизайн, преди да решите.
+        <span data-i18n="heroNote">Без ангажимент. Виждате примерен дизайн, преди да решите.</span>
       </p>
     </div>
     <div class="hero-art" aria-hidden="true">
@@ -770,46 +804,46 @@
       </div>
     </div>
   </div>
-  <a class="hero-scroll" href="#portfolio">Разгледай<span class="dot"></span></a>
+  <a class="hero-scroll" href="#portfolio" data-i18n-html="heroScroll">Разгледай<span class="dot"></span></a>
 </header>
 
 <!-- ============ PORTFOLIO ============ -->
 <section class="sect light" id="portfolio">
   <div class="wrap">
     <div class="sect-head">
-      <span class="eyebrow rv">Портфолио</span>
-      <h2 class="display rv rv-d1">Менюта, подредени като галерия.</h2>
-      <p class="rv rv-d2">Всеки проект е демонстрационен дизайн от студиото, преди адаптация към конкретен ресторант. Реалните клиентски проекти ще бъдат добавени тук.</p>
+      <span class="eyebrow rv" data-i18n="pfEyebrow">Портфолио</span>
+      <h2 class="display rv rv-d1" data-i18n="pfH2">Менюта, подредени като галерия.</h2>
+      <p class="rv rv-d2" data-i18n="pfIntro">Всеки проект е демонстрационен дизайн от студиото, преди адаптация към конкретен ресторант. Реалните клиентски проекти ще бъдат добавени тук.</p>
     </div>
     <div class="masonry">
       <div class="m-col">
         <figure class="piece rv"><img src="assets/menu-sushi.jpeg" alt="Дигитално меню в японски стил" loading="lazy">
-          <figcaption><span>Японски стил</span><span>QR меню</span></figcaption></figure>
+          <figcaption><span data-i18n="pf1a">Японски стил</span><span data-i18n="pf1b">QR меню</span></figcaption></figure>
         <figure class="piece rv rv-d2"><img src="assets/menu-italian.jpg" alt="Италианско меню, пица и паста" loading="lazy">
-          <figcaption><span>Италианско меню</span><span>Принт меню</span></figcaption></figure>
+          <figcaption><span data-i18n="pf2a">Италианско меню</span><span data-i18n="pf2b">Принт меню</span></figcaption></figure>
         <figure class="piece rv rv-d3"><img src="assets/promo-demo.jpeg" alt="Безплатна демонстрация, примерен дизайн на телефон" loading="lazy">
-          <figcaption><span>Демонстрация</span><span>Кампания</span></figcaption></figure>
+          <figcaption><span data-i18n="pf3a">Демонстрация</span><span data-i18n="pf3b">Кампания</span></figcaption></figure>
       </div>
       <div class="m-col">
         <figure class="piece rv rv-d1"><img src="assets/menu-desserts.jpeg" alt="Меню за сладкарница в парижки стил" loading="lazy">
-          <figcaption><span>Сладки изкушения</span><span>Принт меню</span></figcaption></figure>
+          <figcaption><span data-i18n="pf4a">Сладки изкушения</span><span data-i18n="pf4b">Принт меню</span></figcaption></figure>
         <figure class="piece rv rv-d2"><img src="assets/menu-elegant.jpg" alt="Елегантно меню със златна типография" loading="lazy">
-          <figcaption><span>Елегантно меню</span><span>Принт меню</span></figcaption></figure>
+          <figcaption><span data-i18n="pf5a">Елегантно меню</span><span data-i18n="pf5b">Принт меню</span></figcaption></figure>
         <figure class="piece rv rv-d3"><img src="assets/promo-process.jpeg" alt="Как работим, четири стъпки" loading="lazy">
-          <figcaption><span>Как работим</span><span>Кампания</span></figcaption></figure>
+          <figcaption><span data-i18n="pf6a">Как работим</span><span data-i18n="pf6b">Кампания</span></figcaption></figure>
         <figure class="piece rv rv-d4"><img src="assets/promo-tablet.jpeg" alt="Дигитално меню на таблет" loading="lazy">
-          <figcaption><span>Меню с очите</span><span>Кампания</span></figcaption></figure>
+          <figcaption><span data-i18n="pf7a">Меню с очите</span><span data-i18n="pf7b">Кампания</span></figcaption></figure>
       </div>
       <div class="m-col">
         <figure class="piece rv rv-d2"><img src="assets/menu-bubble.jpeg" alt="Цветно меню за bubble tea напитки" loading="lazy">
-          <figcaption><span>Bubble Drinks</span><span>Принт меню</span></figcaption></figure>
+          <figcaption><span data-i18n="pf8a">Bubble Drinks</span><span data-i18n="pf8b">Принт меню</span></figcaption></figure>
         <figure class="piece rv rv-d3"><img src="assets/menu-american.jpg" alt="Американско меню, бургери и барбекю" loading="lazy">
-          <figcaption><span>Американско меню</span><span>Принт меню</span></figcaption></figure>
+          <figcaption><span data-i18n="pf9a">Американско меню</span><span data-i18n="pf9b">Принт меню</span></figcaption></figure>
         <figure class="piece rv rv-d4"><img src="assets/promo-qr.jpg" alt="QR меню, сканирай, разгледай, избери" loading="lazy">
-          <figcaption><span>QR Меню</span><span>Кампания</span></figcaption></figure>
+          <figcaption><span data-i18n="pf10a">QR Меню</span><span data-i18n="pf10b">Кампания</span></figcaption></figure>
       </div>
     </div>
-    <p class="gallery-hint">Плъзни настрани, за да разгледаш →</p>
+    <p class="gallery-hint" data-i18n="galleryHint">Плъзни настрани, за да разгледаш →</p>
   </div>
 </section>
 
@@ -817,30 +851,29 @@
 <section class="sect" id="live">
   <div class="wrap live-grid">
     <div>
-      <span class="eyebrow rv">Живо демо</span>
-      <h2 class="display rv rv-d1">Пробвайте меню, което <span class="gold" style="font-style:italic;background:linear-gradient(115deg,#e6cd8b,#b3903f 55%,#e0c47c);-webkit-background-clip:text;background-clip:text;color:transparent">работи</span>.</h2>
-      <p class="lead rv rv-d2">Това е истинско QR меню, не снимка. Сменете категорията, отворете ястие, добавете го към поръчката и превключете на английски. Точно това получава гостът на масата.</p>
+      <span class="eyebrow rv" data-i18n="liveEyebrow">Живо демо</span>
+      <h2 class="display rv rv-d1" data-i18n-html="liveH2">Пробвайте меню, което <span class="gold" style="font-style:italic;background:linear-gradient(115deg,#e6cd8b,#b3903f 55%,#e0c47c);-webkit-background-clip:text;background-clip:text;color:transparent">работи</span>.</h2>
+      <p class="lead rv rv-d2" data-i18n="liveLead">Това е истинско QR меню, не снимка. Сменете категорията, отворете ястие и превключете на английски. Точно това получава гостът на масата.</p>
       <ul class="live-points">
-        <li class="rv rv-d2">Категории в прозрачен стъклен таб бар</li>
-        <li class="rv rv-d3">Снимки, описания, съставки и алергени</li>
-        <li class="rv rv-d3">Поръчка от масата и повикване на сервитьор</li>
-        <li class="rv rv-d4">Български и английски с един клик</li>
+        <li class="rv rv-d2" data-i18n="liveB1">Категории в прозрачен стъклен таб бар</li>
+        <li class="rv rv-d3" data-i18n="liveB2">Снимки, описания, съставки и алергени</li>
+        <li class="rv rv-d4" data-i18n="liveB3">Български и английски с един клик</li>
       </ul>
       <div class="hero-cta rv rv-d4">
         <a class="btn btn-gold magnetic" href="demo.html" target="_blank" rel="noopener">
-          Отвори на цял екран
+          <span data-i18n="liveCta1">Отвори на цял екран</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
         </a>
-        <a class="btn btn-ghost magnetic" href="#demo">Искам такова меню</a>
+        <a class="btn btn-ghost magnetic" href="#demo" data-i18n="liveCta2">Искам такова меню</a>
       </div>
     </div>
     <div class="live-art rv rv-d2">
       <div class="phone">
         <div class="phone-screen">
-          <iframe src="demo.html?embed=1" title="Живо демонстрационно меню" loading="lazy"></iframe>
+          <iframe src="demo.html?embed=1" title="Живо демонстрационно меню" data-i18n-aria="iframeTitle" loading="lazy"></iframe>
         </div>
       </div>
-      <p class="live-hint"><i></i>Пробвайте направо тук, докоснете таб или ястие</p>
+      <p class="live-hint"><i></i><span data-i18n="liveHint">Пробвайте направо тук, докоснете таб или ястие</span></p>
     </div>
   </div>
 </section>
@@ -849,30 +882,30 @@
 <section class="sect" id="services">
   <div class="wrap">
     <div class="sect-head">
-      <span class="eyebrow rv">Услуги</span>
-      <h2 class="display rv rv-d1">Всичко, което едно меню трябва да умее.</h2>
-      <p class="rv rv-d2">От първата снимка до финалните файлове за печат, всяка стъпка е направена с внимание към детайла.</p>
+      <span class="eyebrow rv" data-i18n="svcEyebrow">Услуги</span>
+      <h2 class="display rv rv-d1" data-i18n="svcH2">Всичко, което едно меню трябва да умее.</h2>
+      <p class="rv rv-d2" data-i18n="svcIntro">От първата снимка до финалните файлове за печат, всяка стъпка е направена с внимание към детайла.</p>
     </div>
     <div class="svc-grid">
       <article class="svc rv">
         <div class="svc-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></div>
-        <h3>Дизайн на меню</h3>
-        <p>Изграждаме менюто като дизайн обект, с типография, подредба и акценти, които водят окото към правилните ястия.</p>
+        <h3 data-i18n="svc1h">Дизайн на меню</h3>
+        <p data-i18n="svc1p">Изграждаме менюто като дизайн обект, с типография, подредба и акценти, които водят окото към правилните ястия.</p>
       </article>
       <article class="svc rv rv-d1">
         <div class="svc-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
-        <h3>Професионални снимки</h3>
-        <p>Заснемаме ястията така, че да се избират с очите, с апетитна светлина и стил, отговарящ на вашата кухня.</p>
+        <h3 data-i18n="svc2h">Професионални снимки</h3>
+        <p data-i18n="svc2p">Заснемаме ястията така, че да се избират с очите, с апетитна светлина и стил, отговарящ на вашата кухня.</p>
       </article>
       <article class="svc rv rv-d2">
         <div class="svc-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14h1M14 20h1M18 18h3v3h-3z"/></svg></div>
-        <h3>QR дигитално меню</h3>
-        <p>Елегантно дигитално меню с QR код на масата, което се отваря мигновено и се обновява без нов печат.</p>
+        <h3 data-i18n="svc3h">QR дигитално меню</h3>
+        <p data-i18n="svc3p">Елегантно дигитално меню с QR код на масата, което се отваря мигновено и се обновява без нов печат.</p>
       </article>
       <article class="svc rv rv-d3">
         <div class="svc-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></div>
-        <h3>Редизайн и сезонни обновления</h3>
-        <p>Освежаваме съществуващи менюта и поддържаме сезонни промени, така че менюто винаги да е актуално и подредено.</p>
+        <h3 data-i18n="svc4h">Редизайн и сезонни обновления</h3>
+        <p data-i18n="svc4p">Освежаваме съществуващи менюта и поддържаме сезонни промени, така че менюто винаги да е актуално и подредено.</p>
       </article>
     </div>
   </div>
@@ -882,31 +915,31 @@
 <section class="sect light" id="process">
   <div class="wrap">
     <div class="sect-head">
-      <span class="eyebrow rv">Как работим</span>
-      <h2 class="display rv rv-d1">Четири стъпки до готово меню.</h2>
-      <p class="rv rv-d2">Целият процес минава онлайн, без срещи и загубено време за вашия екип.</p>
+      <span class="eyebrow rv" data-i18n="procEyebrow">Как работим</span>
+      <h2 class="display rv rv-d1" data-i18n="procH2">Четири стъпки до готово меню.</h2>
+      <p class="rv rv-d2" data-i18n="procIntro">Целият процес минава онлайн, без срещи и загубено време за вашия екип.</p>
     </div>
     <div class="proc">
       <div class="proc-line" aria-hidden="true"><i id="procFill"></i></div>
       <div class="step rv">
         <div class="step-no serif">01</div>
-        <h3>Изпращате менюто</h3>
-        <p>Пращате ни текущото си меню, файл, снимка или линк, заедно с предпочитан стил.</p>
+        <h3 data-i18n="step1h">Изпращате менюто</h3>
+        <p data-i18n="step1p">Пращате ни текущото си меню, файл, снимка или линк, заедно с предпочитан стил.</p>
       </div>
       <div class="step rv rv-d1">
         <div class="step-no serif">02</div>
-        <h3>Създаваме дизайна</h3>
-        <p>Изграждаме дизайна и снимките, съобразени с бранда и атмосферата на вашето заведение.</p>
+        <h3 data-i18n="step2h">Създаваме дизайна</h3>
+        <p data-i18n="step2p">Изграждаме дизайна и снимките, съобразени с бранда и атмосферата на вашето заведение.</p>
       </div>
       <div class="step rv rv-d2">
         <div class="step-no serif">03</div>
-        <h3>Получавате QR код</h3>
-        <p>Дигиталното меню е готово с QR код за масите, а промените по него са бързи и лесни.</p>
+        <h3 data-i18n="step3h">Получавате QR код</h3>
+        <p data-i18n="step3p">Дигиталното меню е готово с QR код за масите, а промените по него са бързи и лесни.</p>
       </div>
       <div class="step rv rv-d3">
         <div class="step-no serif">04</div>
-        <h3>Менюто е готово</h3>
-        <p>Получавате финалните файлове, готови за печат, и менюто започва да продава вместо вас.</p>
+        <h3 data-i18n="step4h">Менюто е готово</h3>
+        <p data-i18n="step4p">Получавате финалните файлове, готови за печат, и менюто започва да продава вместо вас.</p>
       </div>
     </div>
   </div>
@@ -916,21 +949,21 @@
 <section class="sect" id="demo">
   <div class="wrap demo-grid">
     <div>
-      <span class="eyebrow rv">Безплатна демонстрация</span>
-      <h2 class="display rv rv-d1" style="font-size:clamp(32px,3.6vw,50px);margin:22px 0 8px">Вижте как би изглеждало вашето меню.</h2>
+      <span class="eyebrow rv" data-i18n="demoEyebrow">Безплатна демонстрация</span>
+      <h2 class="display rv rv-d1" style="font-size:clamp(32px,3.6vw,50px);margin:22px 0 8px" data-i18n="demoH2">Вижте как би изглеждало вашето меню.</h2>
       <ul class="demo-steps">
-        <li class="rv"><span class="n serif">1</span><p>Изпратете ни меню или линк<small>Работим с това, което вече имате.</small></p></li>
-        <li class="rv rv-d1"><span class="n serif">2</span><p>Изберете предпочитан стил<small>Елегантен, модерен, класически или по ваша идея.</small></p></li>
-        <li class="rv rv-d2"><span class="n serif">3</span><p>Получавате примерен дизайн<small>Безплатно и без ангажимент да продължите.</small></p></li>
+        <li class="rv"><span class="n serif">1</span><p data-i18n-html="demoStep1">Изпратете ни меню или линк<small>Работим с това, което вече имате.</small></p></li>
+        <li class="rv rv-d1"><span class="n serif">2</span><p data-i18n-html="demoStep2">Изберете предпочитан стил<small>Елегантен, модерен, класически или по ваша идея.</small></p></li>
+        <li class="rv rv-d2"><span class="n serif">3</span><p data-i18n-html="demoStep3">Получавате примерен дизайн<small>Безплатно и без ангажимент да продължите.</small></p></li>
       </ul>
       <div class="rv rv-d3" style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
         <a class="btn btn-gold magnetic" href="https://www.instagram.com/menuframe.studio.bg" target="_blank" rel="noopener">
-          Пиши ни на лично
+          <span data-i18n="demoCta">Пиши ни на лично</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
         </a>
         <span class="demo-badge">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#d8b96a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-          Без ангажимент
+          <span data-i18n="demoBadge">Без ангажимент</span>
         </span>
       </div>
     </div>
@@ -938,7 +971,7 @@
       <div class="frame" aria-hidden="true"><img src="assets/menu-bubble.jpeg" alt=""></div>
       <a class="qr-card" href="https://www.instagram.com/menuframe.studio.bg" target="_blank" rel="noopener">
         <img src="assets/qr-instagram.png" alt="QR код към Instagram на MenuFrame Studio">
-        <span>Сканирай и ни пиши</span>
+        <span data-i18n="qrSpan">Сканирай и ни пиши</span>
       </a>
     </div>
   </div>
@@ -948,67 +981,85 @@
 <section class="sect" id="contact">
   <div class="wrap contact-grid">
     <div class="contact-side">
-      <span class="eyebrow rv">Контакт</span>
-      <h2 class="display rv rv-d1" style="font-size:clamp(32px,3.4vw,46px);margin-top:22px">Готови ли сте менюто ви да заработи?</h2>
-      <p class="rv rv-d2">Пишете ни и ще получите отговор с примерен дизайн за вашето заведение. Най-бързо отговаряме в Instagram.</p>
+      <span class="eyebrow rv" data-i18n="contactEyebrow">Контакт</span>
+      <h2 class="display rv rv-d1" style="font-size:clamp(32px,3.4vw,46px);margin-top:22px" data-i18n="contactH2">Готови ли сте менюто ви да заработи?</h2>
+      <p class="rv rv-d2" data-i18n="contactIntro">Пишете ни и ще получите отговор с примерен дизайн за вашето заведение. Най-бързо отговаряме в Instagram.</p>
       <div class="contact-alt rv rv-d3">
         <a href="https://www.instagram.com/menuframe.studio.bg" target="_blank" rel="noopener">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
           @menuframe.studio.bg
         </a>
-        <a href="#" aria-disabled="true">
+        <a href="mailto:menuframe.studio.bg@abv.bg">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg>
-          [имейл, ще бъде добавен]
+          menuframe.studio.bg@abv.bg
         </a>
-        <a href="#" aria-disabled="true">
+        <a href="tel:+359876913396">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.6 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
-          [телефон, ще бъде добавен]
+          0876 913 396
         </a>
       </div>
     </div>
     <form class="rv rv-d2" action="#" method="post" id="contactForm">
       <div class="field">
-        <label for="f-name">Вашето име</label>
+        <label for="f-name" data-i18n="formName">Вашето име</label>
         <input id="f-name" name="name" type="text" autocomplete="name" required>
       </div>
       <div class="field">
-        <label for="f-rest">Ресторант</label>
+        <label for="f-rest" data-i18n="formRest">Ресторант</label>
         <input id="f-rest" name="restaurant" type="text" autocomplete="organization" required>
       </div>
+      <div class="field">
+        <label for="f-menu" data-i18n="formMenu">Текущо меню или сайт (по желание)</label>
+        <input id="f-menu" name="currentMenuUrl" type="text" autocomplete="url" placeholder="https://...">
+      </div>
+      <div class="field">
+        <label for="f-style" data-i18n="formStyle">Предпочитан стил</label>
+        <select id="f-style" name="preferredStyle">
+          <option value="" disabled selected data-i18n="styleSelect">Изберете стил</option>
+          <option data-i18n="style1">Минимален</option>
+          <option data-i18n="style2">Луксозен</option>
+          <option data-i18n="style3">Модерен</option>
+          <option data-i18n="style4">Тъмен</option>
+          <option data-i18n="style5">Средиземноморски</option>
+          <option data-i18n="style6">Кежуъл</option>
+          <option data-i18n="style7">Файн дайнинг</option>
+          <option data-i18n="style8">Друго</option>
+        </select>
+      </div>
       <div class="field full">
-        <label for="f-email">Имейл</label>
+        <label for="f-email" data-i18n="formEmail">Имейл</label>
         <input id="f-email" name="email" type="email" autocomplete="email" required>
       </div>
       <div class="field full">
-        <label for="f-msg">Съобщение</label>
-        <textarea id="f-msg" name="message" placeholder="Разкажете ни за заведението и менюто, което искате."></textarea>
+        <label for="f-msg" data-i18n="formMsg">Съобщение</label>
+        <textarea id="f-msg" name="message" placeholder="Разкажете ни за заведението и менюто, което искате." data-i18n-placeholder="formMsgPh"></textarea>
       </div>
       <div class="form-foot">
         <button class="btn btn-gold magnetic" type="submit">
-          Изпрати запитване
+          <span data-i18n="formSubmit">Изпрати запитване</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
         </button>
-        <span class="form-note">[Формата ще бъде свързана към имейл при качване на сайта.]</span>
+        <span class="form-note" id="formNote" data-i18n="formNote">Отговаряме обикновено до 24 часа.</span>
       </div>
     </form>
   </div>
 </section>
 
 <!-- ============ LIGHTBOX ============ -->
-<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Разглеждане на портфолио">
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Разглеждане на портфолио" data-i18n-aria="lbAria">
   <div class="lb-stage" id="lbStage"></div>
   <span class="lb-count" id="lbCount"></span>
-  <button class="lb-close" id="lbClose" type="button" aria-label="Затвори">
+  <button class="lb-close" id="lbClose" type="button" aria-label="Затвори" data-i18n-aria="lbCloseAria">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
   </button>
-  <button class="lb-nav lb-prev" id="lbPrev" type="button" aria-label="Предишен">
+  <button class="lb-nav lb-prev" id="lbPrev" type="button" aria-label="Предишен" data-i18n-aria="lbPrevAria">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
   </button>
-  <button class="lb-nav lb-next" id="lbNext" type="button" aria-label="Следващ">
+  <button class="lb-nav lb-next" id="lbNext" type="button" aria-label="Следващ" data-i18n-aria="lbNextAria">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
   </button>
   <div class="lb-cap" id="lbCap"></div>
-  <span class="lb-hint">Скрол или стрелки за следващо</span>
+  <span class="lb-hint" data-i18n="lbHint">Скрол или стрелки за следващо</span>
 </div>
 
 <!-- ============ FOOTER ============ -->
@@ -1022,25 +1073,25 @@
             <div class="brand-name" style="font-size:16px">MENUFRAME<em>STUDIO</em></div>
           </div>
         </div>
-        <p class="foot-tag">„Меню, което се избира с очите."</p>
+        <p class="foot-tag" data-i18n="tagline">„Меню, което се избира с очите."</p>
       </div>
       <div class="foot-meta">
-        <strong style="color:var(--tx-dark);letter-spacing:.16em;font-size:12px">НАВИГАЦИЯ</strong>
-        <a href="#portfolio">Портфолио</a>
-        <a href="#services">Услуги</a>
-        <a href="#process">Процес</a>
-        <a href="#contact">Контакт</a>
+        <strong style="color:var(--tx-dark);letter-spacing:.16em;font-size:12px" data-i18n="footNav">НАВИГАЦИЯ</strong>
+        <a href="#portfolio" data-i18n="navPortfolio">Портфолио</a>
+        <a href="#services" data-i18n="navServices">Услуги</a>
+        <a href="#process" data-i18n="navProcess">Процес</a>
+        <a href="#contact" data-i18n="navContact">Контакт</a>
       </div>
       <div class="foot-meta">
-        <strong style="color:var(--tx-dark);letter-spacing:.16em;font-size:12px">КОНТАКТ</strong>
+        <strong style="color:var(--tx-dark);letter-spacing:.16em;font-size:12px" data-i18n="footContact">КОНТАКТ</strong>
         <a href="https://www.instagram.com/menuframe.studio.bg" target="_blank" rel="noopener">Instagram: @menuframe.studio.bg</a>
-        <span>[имейл, ще бъде добавен]</span>
-        <span>[телефон и град, ще бъдат добавени]</span>
+        <a href="mailto:menuframe.studio.bg@abv.bg">menuframe.studio.bg@abv.bg</a>
+        <a href="tel:+359876913396">0876 913 396</a>
       </div>
     </div>
     <div class="foot-bottom">
-      <span>© 2026 MenuFrame Studio. Всички права запазени.</span>
-      <span>Дизайн, снимки и QR менюта за ресторанти</span>
+      <span data-i18n="copyright">© 2026 MenuFrame Studio. Всички права запазени.</span>
+      <span data-i18n="footTagline2">Дизайн, снимки и QR менюта за ресторанти</span>
     </div>
   </div>
 </footer>
@@ -1048,6 +1099,146 @@
 <script>
 (function(){
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------------- language ---------------- */
+  let L = 'bg';
+  try {
+    const saved = localStorage.getItem('mf-lang');
+    L = saved === 'en' || saved === 'bg' ? saved : ((navigator.language || 'bg').toLowerCase().startsWith('bg') ? 'bg' : 'en');
+  } catch(e) {}
+  const UI = {
+    bg: {
+      title:'MenuFrame Studio — Меню, което се избира с очите',
+      desc:'Студио за дизайн на ресторантски менюта. Дизайн, снимки и QR дигитални менюта, които продават.',
+      menuBtnAria:'Отвори менюто', brandHint:'Меню',
+      navPortfolio:'Портфолио', navLive:'Живо демо', navServices:'Услуги', navProcess:'Процес', navContact:'Контакт', navCta:'Безплатна демонстрация',
+      ovAria:'Навигация', ovCloseAria:'Затвори менюто',
+      ovHome:'<i>01</i>Начало', ovPortfolio:'<i>02</i>Портфолио', ovLive:'<i>03</i>Живо демо', ovServices:'<i>04</i>Услуги', ovProcess:'<i>05</i>Процес', ovContact:'<i>06</i>Контакт',
+      logoAlt:'MenuFrame Studio лого', tagline:'„Меню, което се избира с очите."', ovCta:'Безплатна демонстрация',
+      heroEyebrow:'Студио за дизайн на менюта',
+      heroH1:'Менюто е най&#8209;добрият <span class="gold">продавач</span> на вашия ресторант.',
+      heroLead:'Меню, което се избира с очите. Създаваме дизайн, професионални снимки и QR дигитални менюта, които превръщат разглеждането в поръчка.',
+      heroCta1:'Заяви безплатна демонстрация', heroCta2:'Виж портфолио',
+      heroNote:'Без ангажимент. Виждате примерен дизайн, преди да решите.',
+      heroScroll:'Разгледай<span class="dot"></span>',
+      pfEyebrow:'Портфолио', pfH2:'Менюта, подредени като галерия.',
+      pfIntro:'Всеки проект е демонстрационен дизайн от студиото, преди адаптация към конкретен ресторант. Реалните клиентски проекти ще бъдат добавени тук.',
+      pf1a:'Японски стил', pf1b:'QR меню', pf2a:'Италианско меню', pf2b:'Принт меню', pf3a:'Демонстрация', pf3b:'Кампания',
+      pf4a:'Сладки изкушения', pf4b:'Принт меню', pf5a:'Елегантно меню', pf5b:'Принт меню', pf6a:'Как работим', pf6b:'Кампания', pf7a:'Меню с очите', pf7b:'Кампания',
+      pf8a:'Bubble Drinks', pf8b:'Принт меню', pf9a:'Американско меню', pf9b:'Принт меню', pf10a:'QR Меню', pf10b:'Кампания',
+      galleryHint:'Плъзни настрани, за да разгледаш →',
+      liveEyebrow:'Живо демо',
+      liveH2:'Пробвайте меню, което <span class="gold" style="font-style:italic;background:linear-gradient(115deg,#e6cd8b,#b3903f 55%,#e0c47c);-webkit-background-clip:text;background-clip:text;color:transparent">работи</span>.',
+      liveLead:'Това е истинско QR меню, не снимка. Сменете категорията, отворете ястие и превключете на английски. Точно това получава гостът на масата.',
+      liveB1:'Категории в прозрачен стъклен таб бар', liveB2:'Снимки, описания, съставки и алергени', liveB3:'Български и английски с един клик',
+      liveCta1:'Отвори на цял екран', liveCta2:'Искам такова меню', iframeTitle:'Живо демонстрационно меню',
+      liveHint:'Пробвайте направо тук, докоснете таб или ястие',
+      svcEyebrow:'Услуги', svcH2:'Всичко, което едно меню трябва да умее.',
+      svcIntro:'От първата снимка до финалните файлове за печат, всяка стъпка е направена с внимание към детайла.',
+      svc1h:'Дизайн на меню', svc1p:'Изграждаме менюто като дизайн обект, с типография, подредба и акценти, които водят окото към правилните ястия.',
+      svc2h:'Професионални снимки', svc2p:'Заснемаме ястията така, че да се избират с очите, с апетитна светлина и стил, отговарящ на вашата кухня.',
+      svc3h:'QR дигитално меню', svc3p:'Елегантно дигитално меню с QR код на масата, което се отваря мигновено и се обновява без нов печат.',
+      svc4h:'Редизайн и сезонни обновления', svc4p:'Освежаваме съществуващи менюта и поддържаме сезонни промени, така че менюто винаги да е актуално и подредено.',
+      procEyebrow:'Как работим', procH2:'Четири стъпки до готово меню.',
+      procIntro:'Целият процес минава онлайн, без срещи и загубено време за вашия екип.',
+      step1h:'Изпращате менюто', step1p:'Пращате ни текущото си меню, файл, снимка или линк, заедно с предпочитан стил.',
+      step2h:'Създаваме дизайна', step2p:'Изграждаме дизайна и снимките, съобразени с бранда и атмосферата на вашето заведение.',
+      step3h:'Получавате QR код', step3p:'Дигиталното меню е готово с QR код за масите, а промените по него са бързи и лесни.',
+      step4h:'Менюто е готово', step4p:'Получавате финалните файлове, готови за печат, и менюто започва да продава вместо вас.',
+      demoEyebrow:'Безплатна демонстрация', demoH2:'Вижте как би изглеждало вашето меню.',
+      demoStep1:'Изпратете ни меню или линк<small>Работим с това, което вече имате.</small>',
+      demoStep2:'Изберете предпочитан стил<small>Елегантен, модерен, класически или по ваша идея.</small>',
+      demoStep3:'Получавате примерен дизайн<small>Безплатно и без ангажимент да продължите.</small>',
+      demoCta:'Пиши ни на лично', demoBadge:'Без ангажимент', qrSpan:'Сканирай и ни пиши',
+      contactEyebrow:'Контакт', contactH2:'Готови ли сте менюто ви да заработи?',
+      contactIntro:'Пишете ни и ще получите отговор с примерен дизайн за вашето заведение. Най-бързо отговаряме в Instagram.',
+      formName:'Вашето име', formRest:'Ресторант', formMenu:'Текущо меню или сайт (по желание)', formStyle:'Предпочитан стил',
+      styleSelect:'Изберете стил', style1:'Минимален', style2:'Луксозен', style3:'Модерен', style4:'Тъмен', style5:'Средиземноморски', style6:'Кежуъл', style7:'Файн дайнинг', style8:'Друго',
+      formEmail:'Имейл', formMsg:'Съобщение', formMsgPh:'Разкажете ни за заведението и менюто, което искате.',
+      formSubmit:'Изпрати запитване', formNote:'Отговаряме обикновено до 24 часа.',
+      formSending:'Изпращане…', formThanks:'Благодарим! Ще се свържем с вас скоро.',
+      formError:'Възникна грешка. Пишете ни в Instagram: @menuframe.studio.bg',
+      lbAria:'Разглеждане на портфолио', lbCloseAria:'Затвори', lbPrevAria:'Предишен', lbNextAria:'Следващ', lbHint:'Скрол или стрелки за следващо',
+      footNav:'НАВИГАЦИЯ', footContact:'КОНТАКТ', copyright:'© 2026 MenuFrame Studio. Всички права запазени.', footTagline2:'Дизайн, снимки и QR менюта за ресторанти',
+    },
+    en: {
+      title:'MenuFrame Studio — A menu you choose with your eyes',
+      desc:'Restaurant menu design studio. Design, photography and QR digital menus that sell.',
+      menuBtnAria:'Open menu', brandHint:'Menu',
+      navPortfolio:'Portfolio', navLive:'Live demo', navServices:'Services', navProcess:'Process', navContact:'Contact', navCta:'Free demo',
+      ovAria:'Navigation', ovCloseAria:'Close menu',
+      ovHome:'<i>01</i>Home', ovPortfolio:'<i>02</i>Portfolio', ovLive:'<i>03</i>Live demo', ovServices:'<i>04</i>Services', ovProcess:'<i>05</i>Process', ovContact:'<i>06</i>Contact',
+      logoAlt:'MenuFrame Studio logo', tagline:'“A menu you choose with your eyes.”', ovCta:'Free demo',
+      heroEyebrow:'Menu design studio',
+      heroH1:'Your menu is your restaurant&rsquo;s best <span class="gold">salesperson</span>.',
+      heroLead:'A menu you choose with your eyes. We create design, professional photography and QR digital menus that turn browsing into ordering.',
+      heroCta1:'Request a free demo', heroCta2:'View portfolio',
+      heroNote:'No commitment. See a sample design before you decide.',
+      heroScroll:'Explore<span class="dot"></span>',
+      pfEyebrow:'Portfolio', pfH2:'Menus, arranged like a gallery.',
+      pfIntro:'Every project is a studio demonstration design, before being adapted to a specific restaurant. Real client projects will be added here.',
+      pf1a:'Japanese style', pf1b:'QR menu', pf2a:'Italian menu', pf2b:'Print menu', pf3a:'Demonstration', pf3b:'Campaign',
+      pf4a:'Sweet temptations', pf4b:'Print menu', pf5a:'Elegant menu', pf5b:'Print menu', pf6a:'How we work', pf6b:'Campaign', pf7a:'Menu with your eyes', pf7b:'Campaign',
+      pf8a:'Bubble Drinks', pf8b:'Print menu', pf9a:'American menu', pf9b:'Print menu', pf10a:'QR Menu', pf10b:'Campaign',
+      galleryHint:'Swipe to browse →',
+      liveEyebrow:'Live demo',
+      liveH2:'Try a menu that <span class="gold" style="font-style:italic;background:linear-gradient(115deg,#e6cd8b,#b3903f 55%,#e0c47c);-webkit-background-clip:text;background-clip:text;color:transparent">works</span>.',
+      liveLead:'This is a real QR menu, not a photo. Switch categories, open a dish, and toggle the language. This is exactly what the guest gets at the table.',
+      liveB1:'Categories in a frosted-glass tab bar', liveB2:'Photos, descriptions, ingredients and allergens', liveB3:'Bulgarian and English with one click',
+      liveCta1:'Open fullscreen', liveCta2:'I want a menu like this', iframeTitle:'Live demo menu',
+      liveHint:'Try it right here — tap a tab or a dish',
+      svcEyebrow:'Services', svcH2:'Everything a menu needs to do.',
+      svcIntro:'From the first photo to the final print-ready files, every step is crafted with attention to detail.',
+      svc1h:'Menu design', svc1p:'We build the menu as a design object — typography, layout and accents that guide the eye to the right dishes.',
+      svc2h:'Professional photography', svc2p:'We shoot dishes so they are chosen with the eyes — appetizing light and a style that matches your kitchen.',
+      svc3h:'QR digital menu', svc3p:'An elegant digital menu with a QR code on the table, opens instantly and updates without reprinting.',
+      svc4h:'Redesign &amp; seasonal updates', svc4p:'We refresh existing menus and keep up with seasonal changes, so the menu always stays current and polished.',
+      procEyebrow:'How we work', procH2:'Four steps to a finished menu.',
+      procIntro:'The whole process runs online — no meetings, no wasted time for your team.',
+      step1h:'You send your menu', step1p:'Send us your current menu — a file, a photo or a link — along with your preferred style.',
+      step2h:'We create the design', step2p:'We build the design and photography to match your brand and your venue&rsquo;s atmosphere.',
+      step3h:'You get a QR code', step3p:'Your digital menu is ready with a QR code for the tables, and updates are quick and easy.',
+      step4h:'Your menu is ready', step4p:'You receive the final, print-ready files, and the menu starts selling on your behalf.',
+      demoEyebrow:'Free demo', demoH2:'See what your menu could look like.',
+      demoStep1:'Send us a menu or a link<small>We work with what you already have.</small>',
+      demoStep2:'Choose your preferred style<small>Elegant, modern, classic, or your own idea.</small>',
+      demoStep3:'Get a sample design<small>Free, with no obligation to continue.</small>',
+      demoCta:'Message us on Instagram', demoBadge:'No commitment', qrSpan:'Scan and message us',
+      contactEyebrow:'Contact', contactH2:'Ready to make your menu work for you?',
+      contactIntro:'Write to us and you&rsquo;ll get a reply with a sample design for your venue. We respond fastest on Instagram.',
+      formName:'Your name', formRest:'Restaurant', formMenu:'Current menu or website (optional)', formStyle:'Preferred style',
+      styleSelect:'Choose a style', style1:'Minimal', style2:'Luxury', style3:'Modern', style4:'Dark', style5:'Mediterranean', style6:'Casual', style7:'Fine dining', style8:'Other',
+      formEmail:'Email', formMsg:'Message', formMsgPh:'Tell us about your venue and the menu you want.',
+      formSubmit:'Send inquiry', formNote:'We usually reply within 24 hours.',
+      formSending:'Sending…', formThanks:'Thank you! We&rsquo;ll be in touch soon.',
+      formError:'Something went wrong. Message us on Instagram: @menuframe.studio.bg',
+      lbAria:'Browsing portfolio', lbCloseAria:'Close', lbPrevAria:'Previous', lbNextAria:'Next', lbHint:'Scroll or use arrow keys for next',
+      footNav:'NAVIGATION', footContact:'CONTACT', copyright:'© 2026 MenuFrame Studio. All rights reserved.', footTagline2:'Design, photography and QR menus for restaurants',
+    }
+  };
+  const t = k => UI[L][k];
+  const langBox = document.getElementById('lang');
+  const pageTitle = document.getElementById('pageTitle');
+  const pageDesc = document.getElementById('pageDesc');
+  const applyI18n = () => {
+    document.documentElement.lang = L;
+    pageTitle.textContent = t('title');
+    pageDesc.setAttribute('content', t('desc'));
+    document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t(el.dataset.i18nHtml); });
+    document.querySelectorAll('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.setAttribute('placeholder', t(el.dataset.i18nPlaceholder)); });
+    langBox.dataset.l = L;
+    langBox.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === L)));
+  };
+  const setLang = (l) => {
+    if (l === L) return;
+    L = l;
+    try { localStorage.setItem('mf-lang', l); } catch(e) {}
+    applyI18n();
+  };
+  langBox.addEventListener('click', e => { const b = e.target.closest('[data-lang]'); if (b) setLang(b.dataset.lang); });
+  applyI18n();
 
   /* nav background on scroll */
   const nav = document.getElementById('nav');
@@ -1280,11 +1471,35 @@
     });
   }
 
-  /* form: placeholder handler until an email is connected */
+  /* form: submits to /api/contact (Resend email + Google Sheets row) */
   const form = document.getElementById('contactForm');
-  form.addEventListener('submit', e=>{
+  const formNote = document.getElementById('formNote');
+  const submitBtn = form.querySelector('button[type="submit"]');
+  form.addEventListener('submit', async e=>{
     e.preventDefault();
-    alert('Формата още не е свързана към имейл. Пишете ни в Instagram: @menuframe.studio.bg');
+    submitBtn.disabled = true;
+    formNote.textContent = t('formSending');
+    try{
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          name: form.name.value,
+          restaurant: form.restaurant.value,
+          currentMenuUrl: form.currentMenuUrl.value,
+          preferredStyle: form.preferredStyle.value,
+          email: form.email.value,
+          message: form.message.value,
+        }),
+      });
+      if(!res.ok) throw new Error('request failed');
+      formNote.textContent = t('formThanks');
+      form.reset();
+    }catch(err){
+      formNote.textContent = t('formError');
+    }finally{
+      submitBtn.disabled = false;
+    }
   });
 })();
 </script>

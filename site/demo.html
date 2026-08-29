@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Ателие — Дигитално меню (демо от MenuFrame Studio)</title>
-<meta name="description" content="Живо демонстрационно QR меню от MenuFrame Studio. Разгледайте категориите, отворете ястие, добавете го към поръчката.">
+<meta name="description" content="Живо демонстрационно QR меню от MenuFrame Studio. Разгледайте категориите и отворете ястие за детайли.">
 <meta name="theme-color" content="#0d0a07">
 <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -276,17 +276,6 @@
   .dish h3{font-size:19px;font-weight:600;letter-spacing:-.01em;line-height:1.25;margin-bottom:5px}
   .dish .desc{font-size:13.5px;line-height:1.6;color:var(--tx-dim);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .dish .grow{flex:1;min-width:0}
-  .add{
-    flex:none;width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;
-    display:grid;place-items:center;color:var(--brass-2);background:var(--glass-2);
-    box-shadow:inset 0 0 0 1px rgba(216,185,106,.45),inset 0 1px 0 var(--glass-hi);
-    transition:transform .35s var(--spring),background .3s ease,color .3s ease;
-  }
-  .add:hover,.add:focus-visible{transform:scale(1.1);background:var(--brass-2);color:var(--ink)}
-  .add:active{transform:scale(.92)}
-  .add:focus-visible{outline:2px solid var(--brass-2);outline-offset:3px}
-  .add.pop{animation:pop .5s var(--spring)}
-  @keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.28)}100%{transform:scale(1)}}
 
   /* ============ sheet (dish detail) ============ */
   .veil{
@@ -327,16 +316,6 @@
   .ings{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
   .ings span{padding:6px 11px;border-radius:999px;font-size:12.5px;color:var(--tx-dim);background:var(--glass);box-shadow:inset 0 0 0 1px rgba(216,185,106,.2)}
   .allerg{margin-top:12px;font-size:12.5px;color:var(--tx-faint)}
-  .sheet .cta{display:flex;align-items:center;gap:12px;margin-top:24px}
-  .stepper{
-    display:inline-flex;align-items:center;border-radius:999px;flex:none;
-    background:var(--glass);box-shadow:inset 0 0 0 1px rgba(216,185,106,.35),inset 0 1px 0 var(--glass-hi);
-  }
-  .stepper button{width:44px;height:48px;border:none;background:none;cursor:pointer;color:var(--brass-2);font-size:20px;transition:transform .3s var(--spring)}
-  .stepper button:hover{transform:scale(1.15)}
-  .stepper button:active{transform:scale(.9)}
-  .stepper button:focus-visible{outline:2px solid var(--brass-2);outline-offset:-4px;border-radius:999px}
-  .stepper output{min-width:26px;text-align:center;font-weight:600;font-variant-numeric:tabular-nums}
   .btn{
     display:inline-flex;align-items:center;justify-content:center;gap:12px;
     padding:15px 26px;border-radius:999px;border:none;cursor:pointer;white-space:nowrap;
@@ -374,80 +353,7 @@
     .sheet .ph{margin:0;border-radius:24px 0 0 24px;aspect-ratio:auto;height:100%;box-shadow:none}
     .sheet .in{padding:36px 34px 32px;display:flex;flex-direction:column}
     .sheet .row{padding-right:56px}
-    .sheet .cta{margin-top:auto;padding-top:26px}
   }
-
-  /* ============ cart pill + drawer ============ */
-  .cart-pill{
-    position:fixed;left:50%;bottom:calc(18px + var(--sab));z-index:70;
-    transform:translate(-50%,120%);opacity:0;
-    display:flex;align-items:center;gap:14px;padding:8px 8px 8px 20px;border-radius:999px;
-    background:linear-gradient(180deg,rgba(255,248,232,.13),rgba(255,248,232,.06));
-    backdrop-filter:blur(24px) saturate(1.6);-webkit-backdrop-filter:blur(24px) saturate(1.6);
-    box-shadow:inset 0 1px 0 var(--glass-hi),inset 0 0 0 1px var(--glass-line),0 30px 60px -24px rgba(0,0,0,.9),0 14px 34px -18px rgba(216,185,106,.45);
-    transition:transform .6s var(--spring),opacity .4s ease;
-    white-space:nowrap;max-width:calc(100vw - 24px);
-  }
-  .cart-pill.show{transform:translate(-50%,0);opacity:1}
-  .cart-pill.bump{animation:bump .55s var(--spring)}
-  @keyframes bump{0%{transform:translate(-50%,0) scale(1)}35%{transform:translate(-50%,-6px) scale(1.04)}100%{transform:translate(-50%,0) scale(1)}}
-  .cart-pill .sum{display:flex;flex-direction:column;line-height:1.2}
-  .cart-pill .sum small{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--tx-faint)}
-  .cart-pill .sum b{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--brass-3)}
-  .cart-pill .btn{padding:12px 20px;font-size:12.5px}
-  .cart-pill .count{
-    width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;
-    font-size:12px;font-weight:600;color:var(--ink);
-    background:linear-gradient(135deg,#f0d998,#c9a75a);box-shadow:0 6px 16px -6px rgba(216,185,106,.8);
-  }
-  .drawer{
-    position:fixed;z-index:90;top:0;right:0;bottom:0;width:min(440px,100vw);
-    background:linear-gradient(180deg,rgba(28,22,15,.88),rgba(16,12,8,.94));
-    backdrop-filter:blur(30px) saturate(1.5);-webkit-backdrop-filter:blur(30px) saturate(1.5);
-    box-shadow:inset 1px 0 0 var(--glass-line),inset 0 1px 0 var(--glass-hi),-30px 0 80px -30px rgba(0,0,0,.9);
-    transform:translateX(105%);visibility:hidden;
-    transition:transform .6s var(--ease),visibility 0s linear .6s;
-    display:flex;flex-direction:column;
-    padding:calc(22px + var(--sat)) 22px calc(22px + var(--sab));
-  }
-  .drawer.open{transform:none;visibility:visible;transition:transform .6s var(--ease)}
-  .drawer h2{font-size:28px;letter-spacing:-.02em;font-weight:600}
-  .drawer .hint{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx-faint);margin-top:4px}
-  .drawer .x{top:calc(22px + var(--sat));right:22px}
-  .lines{flex:1;overflow:auto;margin:22px -6px 0;padding:0 6px;scrollbar-width:none}
-  .lines::-webkit-scrollbar{display:none}
-  .line{
-    display:flex;align-items:center;gap:12px;padding:12px 0;
-    border-bottom:1px solid rgba(216,185,106,.14);
-    animation:rise .5s var(--ease) both;
-  }
-  .line img{width:58px;height:58px;border-radius:12px;object-fit:cover;flex:none;box-shadow:inset 0 0 0 1px rgba(216,185,106,.3)}
-  .line .grow{flex:1;min-width:0}
-  .line b{display:block;font-family:'Playfair Display',serif;font-weight:600;font-size:16px;line-height:1.25}
-  .line small{color:var(--tx-faint);font-size:12px}
-  .line .stepper button{width:36px;height:38px;font-size:17px}
-  .line .lp{font-family:'Playfair Display',serif;font-weight:600;color:var(--brass-3);min-width:64px;text-align:right;font-variant-numeric:tabular-nums}
-  .empty{padding:60px 0;text-align:center;color:var(--tx-faint);font-family:'Playfair Display',serif;font-style:italic;font-size:18px}
-  .totals{margin-top:16px;padding-top:16px;border-top:1px solid rgba(216,185,106,.28)}
-  .totals div{display:flex;justify-content:space-between;font-size:14px;color:var(--tx-dim);padding:3px 0}
-  .totals .big{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--tx)}
-  .totals .big span:last-child{color:var(--brass-3)}
-  .drawer .cta{display:grid;gap:10px;margin-top:18px}
-  .drawer .cta .btn-gold{flex:none}
-
-  /* ============ toast ============ */
-  .toast{
-    position:fixed;left:50%;top:calc(80px + var(--sat));z-index:120;
-    transform:translate(-50%,-30px);opacity:0;pointer-events:none;
-    padding:14px 20px;border-radius:16px;max-width:min(92vw,460px);text-align:center;
-    background:linear-gradient(180deg,rgba(28,22,15,.92),rgba(16,12,8,.94));
-    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-    box-shadow:inset 0 1px 0 var(--glass-hi),inset 0 0 0 1px var(--glass-line),0 30px 60px -24px rgba(0,0,0,.9);
-    font-size:14px;line-height:1.5;
-    transition:transform .5s var(--spring),opacity .35s ease;
-  }
-  .toast b{color:var(--brass-3);font-weight:600}
-  .toast.show{transform:translate(-50%,0);opacity:1}
 
   /* ============ footer ============ */
   .foot{padding:40px 0 calc(110px + var(--sab));text-align:center}
@@ -549,13 +455,6 @@
   </footer>
 </div>
 
-<!-- cart pill -->
-<div class="cart-pill" id="cartPill" role="status" aria-live="polite">
-  <span class="count" id="cartCount">0</span>
-  <span class="sum"><small data-i18n="yourOrder">Вашата поръчка</small><b id="cartTotal">0,00 €</b></span>
-  <button class="btn btn-gold" type="button" id="cartOpen" data-i18n="view">Преглед</button>
-</div>
-
 <!-- veil -->
 <div class="veil" id="veil"></div>
 
@@ -572,37 +471,8 @@
     <div class="sub" data-i18n="ingredients">Съставки</div>
     <div class="ings" id="shIngs"></div>
     <p class="allerg" id="shAllerg"></p>
-    <div class="cta">
-      <div class="stepper">
-        <button type="button" id="qMinus" data-i18n-aria="less">−</button>
-        <output id="qty">1</output>
-        <button type="button" id="qPlus" data-i18n-aria="more">+</button>
-      </div>
-      <button class="btn btn-gold" type="button" id="shAdd"><span data-i18n="addTo">Добави в поръчката</span>&nbsp;· <span id="shSum"></span></button>
-    </div>
   </div>
 </div>
-
-<!-- cart drawer -->
-<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drTitle">
-  <button class="x" type="button" id="drClose" data-i18n-aria="close">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-  </button>
-  <h2 id="drTitle" data-i18n="yourOrder">Вашата поръчка</h2>
-  <p class="hint" data-i18n="drHint">Маса 12 · Демонстрация</p>
-  <div class="lines" id="lines"></div>
-  <div class="totals">
-    <div><span data-i18n="subtotal">Междинна сума</span><span id="tSub">0,00 €</span></div>
-    <div><span data-i18n="service">Сервиз (включен)</span><span>0,00 €</span></div>
-    <div class="big"><span data-i18n="total">Общо</span><span id="tTotal">0,00 €</span></div>
-  </div>
-  <div class="cta">
-    <button class="btn btn-gold" type="button" id="orderBtn" data-i18n="sendOrder">Изпрати поръчката към кухнята</button>
-    <button class="btn btn-ghost" type="button" id="waiterBtn" data-i18n="callWaiter">Извикай сервитьор</button>
-  </div>
-</aside>
-
-<div class="toast" id="toast"></div>
 
 <script>
 (function(){
@@ -624,16 +494,9 @@
       demoShort:'Демо', demoLong:'от MenuFrame Studio',
       eyebrow:'Дигитално меню', h1:'Ателие', tagline:'Меню, което се избира с очите.',
       open:'Кухнята работи', table:'Маса 12', tabsAria:'Категории',
-      yourOrder:'Вашата поръчка', view:'Преглед', close:'Затвори', less:'По-малко', more:'Повече',
-      ingredients:'Съставки', addTo:'Добави в поръчката', contains:'Съдържа',
-      drHint:'Маса 12 · Демонстрация', subtotal:'Междинна сума', service:'Сервиз (включен)', total:'Общо',
-      sendOrder:'Изпрати поръчката към кухнята', callWaiter:'Извикай сервитьор',
-      empty:'Поръчката е празна. Изберете нещо от менюто.',
+      close:'Затвори',
+      ingredients:'Съставки', contains:'Съдържа',
       one:'предложение', many:'предложения',
-      added:(n,name)=>`<b>${n>1?n+' × ':''}${name}</b> е добавено към поръчката.`,
-      ordered:'<b>Демонстрация.</b> В истинското меню поръчката отива директно при кухнята или сервитьора.',
-      waiter:'<b>Демонстрация.</b> Сервитьорът ще бъде уведомен за маса 12.',
-      addAria:n=>'Добави '+n,
       footH:'Искате <em>такова меню</em> за вашето заведение?',
       footP:'Това е демонстрационно QR меню от MenuFrame Studio. Дизайн, снимки и дигитално меню, което се обновява без нов печат.',
       footCta:'Безплатна демонстрация', footNote:'Демонстрационен дизайн · Цените са примерни',
@@ -645,16 +508,9 @@
       demoShort:'Demo', demoLong:'by MenuFrame Studio',
       eyebrow:'Digital menu', h1:'Atelier', tagline:'A menu you choose with your eyes.',
       open:'Kitchen is open', table:'Table 12', tabsAria:'Categories',
-      yourOrder:'Your order', view:'View', close:'Close', less:'Less', more:'More',
-      ingredients:'Ingredients', addTo:'Add to order', contains:'Contains',
-      drHint:'Table 12 · Demo', subtotal:'Subtotal', service:'Service (included)', total:'Total',
-      sendOrder:'Send order to the kitchen', callWaiter:'Call a waiter',
-      empty:'Your order is empty. Pick something from the menu.',
+      close:'Close',
+      ingredients:'Ingredients', contains:'Contains',
       one:'dish', many:'dishes',
-      added:(n,name)=>`<b>${n>1?n+' × ':''}${name}</b> added to your order.`,
-      ordered:'<b>Demo.</b> In the real menu the order goes straight to the kitchen or your waiter.',
-      waiter:'<b>Demo.</b> A waiter has been notified for table 12.',
-      addAria:n=>'Add '+n,
       footH:'Want <em>a menu like this</em> for your venue?',
       footP:'This is a demo QR menu by MenuFrame Studio. Design, photography and a digital menu that updates without reprinting.',
       footCta:'Free demo', footNote:'Demo design · Prices are illustrative',
@@ -824,9 +680,6 @@
         </div>
         <div class="body">
           <div class="grow"><h3>${tx(d.name)}</h3><p class="desc">${tx(d.desc)}</p></div>
-          <button class="add" type="button" data-add="${d.id}" aria-label="${t('addAria')(tx(d.name))}">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-          </button>
         </div>
       </article>`).join('');
   };
@@ -867,56 +720,10 @@
     sx = sy = null;
   }, {passive:true});
 
-  /* ---------------- cart ---------------- */
-  const cart = new Map();
-  const pill = document.getElementById('cartPill');
-  const cartCount = document.getElementById('cartCount');
-  const cartTotal = document.getElementById('cartTotal');
-  const lines = document.getElementById('lines');
-  const tSub = document.getElementById('tSub'), tTotal = document.getElementById('tTotal');
-  const totals = () => { let n = 0, s = 0; cart.forEach((q, id) => { n += q; s += q * ALL[id].price; }); return {n, s}; };
-  const renderCart = () => {
-    const {n, s} = totals();
-    cartCount.textContent = n; cartTotal.textContent = eur(s);
-    tSub.textContent = eur(s); tTotal.textContent = eur(s);
-    pill.classList.toggle('show', n > 0);
-    if (!n) { lines.innerHTML = `<p class="empty">${t('empty')}</p>`; return; }
-    lines.innerHTML = [...cart.entries()].map(([id, q]) => { const d = ALL[id]; return `
-      <div class="line">
-        <img src="${D}${id}.jpg" alt="">
-        <div class="grow"><b>${tx(d.name)}</b><small>${eur(d.price)} · ${tx(d.cat.name)}</small></div>
-        <div class="stepper">
-          <button type="button" data-dec="${id}" aria-label="${t('less')}">−</button>
-          <output>${q}</output>
-          <button type="button" data-inc="${id}" aria-label="${t('more')}">+</button>
-        </div>
-        <span class="lp">${eur(q * d.price)}</span>
-      </div>`; }).join('');
-  };
-  const add = (id, q) => {
-    cart.set(id, (cart.get(id) || 0) + q);
-    renderCart();
-    pill.classList.remove('bump'); void pill.offsetWidth; pill.classList.add('bump');
-  };
-  const dec = (id) => { const q = (cart.get(id) || 0) - 1; q > 0 ? cart.set(id, q) : cart.delete(id); renderCart(); };
-  lines.addEventListener('click', e => {
-    const inc = e.target.closest('[data-inc]'), d = e.target.closest('[data-dec]');
-    if (inc) add(inc.dataset.inc, 1);
-    if (d) dec(d.dataset.dec);
-  });
-
-  /* ---------------- toast ---------------- */
-  const toast = document.getElementById('toast'); let tt;
-  const say = (html) => { toast.innerHTML = html; toast.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => toast.classList.remove('show'), 3200); };
-
   /* ---------------- dish sheet ---------------- */
   const veil = document.getElementById('veil');
   const sheet = document.getElementById('sheet');
-  const drawer = document.getElementById('drawer');
-  const qtyOut = document.getElementById('qty');
-  const shSum = document.getElementById('shSum');
-  let shItem = null, qty = 1, lastFocus = null;
-  const syncSum = () => { shSum.textContent = eur(qty * shItem.price); qtyOut.textContent = qty; };
+  let shItem = null, lastFocus = null;
   const fillSheet = () => {
     const img = document.getElementById('shImg');
     img.src = D + shItem.id + '.jpg'; img.alt = tx(shItem.name);
@@ -927,34 +734,22 @@
     document.getElementById('shIngs').innerHTML = tx(shItem.ings).map(s => `<span>${s}</span>`).join('');
     document.getElementById('shAllerg').textContent = t('contains') + ': ' + tx(shItem.allerg) + '.';
     sheet.classList.toggle('drink', !!shItem.cat.drink);
-    syncSum();
   };
   const openSheet = (id) => {
-    shItem = ALL[id]; qty = 1;
+    shItem = ALL[id];
     fillSheet();
-    toast.classList.remove('show');
     lastFocus = document.activeElement;
     sheet.classList.add('open'); veil.classList.add('open'); document.body.classList.add('lock');
     sheet.scrollTop = 0;
     document.getElementById('shClose').focus();
   };
   const closeAll = () => {
-    sheet.classList.remove('open'); drawer.classList.remove('open'); veil.classList.remove('open');
+    sheet.classList.remove('open'); veil.classList.remove('open');
     document.body.classList.remove('lock');
     lastFocus && lastFocus.focus && lastFocus.focus();
   };
-  const openDrawer = () => {
-    renderCart();
-    toast.classList.remove('show');
-    lastFocus = document.activeElement;
-    sheet.classList.remove('open');
-    drawer.classList.add('open'); veil.classList.add('open'); document.body.classList.add('lock');
-    document.getElementById('drClose').focus();
-  };
 
   grid.addEventListener('click', e => {
-    const a = e.target.closest('[data-add]');
-    if (a) { e.stopPropagation(); add(a.dataset.add, 1); a.classList.remove('pop'); void a.offsetWidth; a.classList.add('pop'); say(t('added')(1, tx(ALL[a.dataset.add].name))); return; }
     const card = e.target.closest('.dish');
     if (card) openSheet(card.dataset.id);
   });
@@ -962,24 +757,9 @@
     const card = e.target.closest('.dish');
     if (card && e.target === card && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openSheet(card.dataset.id); }
   });
-  document.getElementById('qPlus').addEventListener('click', () => { qty = Math.min(20, qty + 1); syncSum(); });
-  document.getElementById('qMinus').addEventListener('click', () => { qty = Math.max(1, qty - 1); syncSum(); });
-  document.getElementById('shAdd').addEventListener('click', () => {
-    add(shItem.id, qty); closeAll();
-    say(t('added')(qty, tx(shItem.name)));
-  });
   document.getElementById('shClose').addEventListener('click', closeAll);
-  document.getElementById('drClose').addEventListener('click', closeAll);
-  document.getElementById('cartOpen').addEventListener('click', openDrawer);
   veil.addEventListener('click', closeAll);
   addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
-  document.getElementById('orderBtn').addEventListener('click', () => {
-    const {n} = totals();
-    if (!n) { say(t('empty')); return; }
-    cart.clear(); renderCart(); closeAll();
-    say(t('ordered'));
-  });
-  document.getElementById('waiterBtn').addEventListener('click', () => { closeAll(); say(t('waiter')); });
 
   let dy0 = null;
   sheet.addEventListener('touchstart', e => { if (sheet.scrollTop <= 0) dy0 = e.touches[0].clientY; }, {passive:true});
@@ -994,7 +774,6 @@
     const apply = () => {
       applyStatic(); labelTabs();
       render(cur); moveInd(cur, true);
-      renderCart();
       if (shItem && sheet.classList.contains('open')) fillSheet();
     };
     if (reduce) { apply(); return; }
@@ -1002,8 +781,6 @@
     setTimeout(() => { apply(); page.classList.remove('swap'); }, 240);
   };
   langBox.addEventListener('click', e => { const b = e.target.closest('[data-lang]'); if (b) setLang(b.dataset.lang); });
-
-  renderCart();
 })();
 </script>
 </body>
