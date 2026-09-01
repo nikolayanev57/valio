@@ -75,12 +75,17 @@ async function sendNotificationEmail({ name, restaurant, email, currentMenuUrl, 
     </div>
   `;
 
-  await resend.emails.send({
+  const { error } = await resend.emails.send({
     from: "MenuFrame Studio <onboarding@resend.dev>",
     to,
     subject: `Ново запитване (VALIO): ${restaurant}`,
     html,
   });
+  // The Resend SDK resolves with { data, error } instead of throwing on
+  // API-level failures (invalid key, unverified domain, etc.) — without
+  // this check, a rejected send looks identical to a successful one to
+  // Promise.allSettled, and the failure never gets logged.
+  if (error) throw new Error(`Resend API error: ${error.message || JSON.stringify(error)}`);
 }
 
 async function appendSheetRow({ name, restaurant, email, currentMenuUrl, preferredStyle, message }) {
