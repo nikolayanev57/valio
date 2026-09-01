@@ -63,7 +63,7 @@ async function sendNotificationEmail({ name, restaurant, email, currentMenuUrl, 
   const resend = new Resend(apiKey);
   const html = `
     <div style="font-family: sans-serif; max-width: 480px;">
-      <h2>Ново запитване от VALIO сайта</h2>
+      <h2>Ново запитване от MenuFrame Studio сайта</h2>
       <table cellpadding="6" style="border-collapse: collapse; width: 100%;">
         <tr><td style="color:#666;border-bottom:1px solid #eee;">Име</td><td style="border-bottom:1px solid #eee;">${escapeHtml(name)}</td></tr>
         <tr><td style="color:#666;border-bottom:1px solid #eee;">Ресторант</td><td style="border-bottom:1px solid #eee;">${escapeHtml(restaurant)}</td></tr>
@@ -78,7 +78,7 @@ async function sendNotificationEmail({ name, restaurant, email, currentMenuUrl, 
   const { error } = await resend.emails.send({
     from: "MenuFrame Studio <inquiries@menuframe-studio.com>",
     to,
-    subject: `Ново запитване (VALIO): ${restaurant}`,
+    subject: `Ново запитване (MenuFrame Studio): ${restaurant}`,
     html,
   });
   // The Resend SDK resolves with { data, error } instead of throwing on
