@@ -640,6 +640,8 @@
     padding-right:44px;
   }
   .field select:invalid{color:var(--tx-dark-dim)}
+  .field select option{background:var(--ink);color:var(--tx-dark);padding:10px}
+  .field select option:checked,.field select option:hover{background:var(--brass-2);color:var(--ink)}
   .form-foot{grid-column:1/-1;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
   .form-note{font-size:12.5px;color:var(--tx-dark-dim);letter-spacing:.03em}
 
@@ -817,29 +819,29 @@
     </div>
     <div class="masonry">
       <div class="m-col">
-        <figure class="piece rv"><img src="assets/menu-sushi.jpeg" alt="Дигитално меню в японски стил" loading="lazy">
+        <figure class="piece rv"><img src="assets/menu-sushi.jpeg" alt="Дигитално меню в японски стил" loading="lazy" width="1254" height="1254">
           <figcaption><span data-i18n="pf1a">Японски стил</span><span data-i18n="pf1b">QR меню</span></figcaption></figure>
-        <figure class="piece rv rv-d2"><img src="assets/menu-italian.jpg" alt="Италианско меню, пица и паста" loading="lazy">
+        <figure class="piece rv rv-d2"><img src="assets/menu-italian.jpg" alt="Италианско меню, пица и паста" loading="lazy" width="1400" height="1366">
           <figcaption><span data-i18n="pf2a">Италианско меню</span><span data-i18n="pf2b">Принт меню</span></figcaption></figure>
-        <figure class="piece rv rv-d3"><img src="assets/promo-demo.jpeg" alt="Безплатна демонстрация, примерен дизайн на телефон" loading="lazy">
+        <figure class="piece rv rv-d3"><img src="assets/promo-demo.jpeg" alt="Безплатна демонстрация, примерен дизайн на телефон" loading="lazy" width="941" height="1672">
           <figcaption><span data-i18n="pf3a">Демонстрация</span><span data-i18n="pf3b">Кампания</span></figcaption></figure>
       </div>
       <div class="m-col">
-        <figure class="piece rv rv-d1"><img src="assets/menu-desserts.jpeg" alt="Меню за сладкарница в парижки стил" loading="lazy">
+        <figure class="piece rv rv-d1"><img src="assets/menu-desserts.jpeg" alt="Меню за сладкарница в парижки стил" loading="lazy" width="1254" height="1254">
           <figcaption><span data-i18n="pf4a">Сладки изкушения</span><span data-i18n="pf4b">Принт меню</span></figcaption></figure>
-        <figure class="piece rv rv-d2"><img src="assets/menu-elegant.jpg" alt="Елегантно меню със златна типография" loading="lazy">
+        <figure class="piece rv rv-d2"><img src="assets/menu-elegant.jpg" alt="Елегантно меню със златна типография" loading="lazy" width="1400" height="1366">
           <figcaption><span data-i18n="pf5a">Елегантно меню</span><span data-i18n="pf5b">Принт меню</span></figcaption></figure>
-        <figure class="piece rv rv-d3"><img src="assets/promo-process.jpeg" alt="Как работим, четири стъпки" loading="lazy">
+        <figure class="piece rv rv-d3"><img src="assets/promo-process.jpeg" alt="Как работим, четири стъпки" loading="lazy" width="1254" height="1254">
           <figcaption><span data-i18n="pf6a">Как работим</span><span data-i18n="pf6b">Кампания</span></figcaption></figure>
-        <figure class="piece rv rv-d4"><img src="assets/promo-tablet.jpeg" alt="Дигитално меню на таблет" loading="lazy">
+        <figure class="piece rv rv-d4"><img src="assets/promo-tablet.jpeg" alt="Дигитално меню на таблет" loading="lazy" width="1254" height="1254">
           <figcaption><span data-i18n="pf7a">Меню с очите</span><span data-i18n="pf7b">Кампания</span></figcaption></figure>
       </div>
       <div class="m-col">
-        <figure class="piece rv rv-d2"><img src="assets/menu-bubble.jpeg" alt="Цветно меню за bubble tea напитки" loading="lazy">
+        <figure class="piece rv rv-d2"><img src="assets/menu-bubble.jpeg" alt="Цветно меню за bubble tea напитки" loading="lazy" width="1254" height="1254">
           <figcaption><span data-i18n="pf8a">Bubble Drinks</span><span data-i18n="pf8b">Принт меню</span></figcaption></figure>
-        <figure class="piece rv rv-d3"><img src="assets/menu-american.jpg" alt="Американско меню, бургери и барбекю" loading="lazy">
+        <figure class="piece rv rv-d3"><img src="assets/menu-american.jpg" alt="Американско меню, бургери и барбекю" loading="lazy" width="1400" height="1366">
           <figcaption><span data-i18n="pf9a">Американско меню</span><span data-i18n="pf9b">Принт меню</span></figcaption></figure>
-        <figure class="piece rv rv-d4"><img src="assets/promo-qr.jpg" alt="QR меню, сканирай, разгледай, избери" loading="lazy">
+        <figure class="piece rv rv-d4"><img src="assets/promo-qr.jpg" alt="QR меню, сканирай, разгледай, избери" loading="lazy" width="1400" height="1413">
           <figcaption><span data-i18n="pf10a">QR Меню</span><span data-i18n="pf10b">Кампания</span></figcaption></figure>
       </div>
     </div>
@@ -1104,7 +1106,7 @@
   let L = 'bg';
   try {
     const saved = localStorage.getItem('mf-lang');
-    L = saved === 'en' || saved === 'bg' ? saved : ((navigator.language || 'bg').toLowerCase().startsWith('bg') ? 'bg' : 'en');
+    L = saved === 'en' || saved === 'bg' ? saved : 'bg';
   } catch(e) {}
   const UI = {
     bg: {
@@ -1192,11 +1194,11 @@
       svc1h:'Menu design', svc1p:'We build the menu as a design object — typography, layout and accents that guide the eye to the right dishes.',
       svc2h:'Professional photography', svc2p:'We shoot dishes so they are chosen with the eyes — appetizing light and a style that matches your kitchen.',
       svc3h:'QR digital menu', svc3p:'An elegant digital menu with a QR code on the table, opens instantly and updates without reprinting.',
-      svc4h:'Redesign &amp; seasonal updates', svc4p:'We refresh existing menus and keep up with seasonal changes, so the menu always stays current and polished.',
+      svc4h:'Redesign & seasonal updates', svc4p:'We refresh existing menus and keep up with seasonal changes, so the menu always stays current and polished.',
       procEyebrow:'How we work', procH2:'Four steps to a finished menu.',
       procIntro:'The whole process runs online — no meetings, no wasted time for your team.',
       step1h:'You send your menu', step1p:'Send us your current menu — a file, a photo or a link — along with your preferred style.',
-      step2h:'We create the design', step2p:'We build the design and photography to match your brand and your venue&rsquo;s atmosphere.',
+      step2h:'We create the design', step2p:'We build the design and photography to match your brand and your venue’s atmosphere.',
       step3h:'You get a QR code', step3p:'Your digital menu is ready with a QR code for the tables, and updates are quick and easy.',
       step4h:'Your menu is ready', step4p:'You receive the final, print-ready files, and the menu starts selling on your behalf.',
       demoEyebrow:'Free demo', demoH2:'See what your menu could look like.',
@@ -1205,12 +1207,12 @@
       demoStep3:'Get a sample design<small>Free, with no obligation to continue.</small>',
       demoCta:'Message us on Instagram', demoBadge:'No commitment', qrSpan:'Scan and message us',
       contactEyebrow:'Contact', contactH2:'Ready to make your menu work for you?',
-      contactIntro:'Write to us and you&rsquo;ll get a reply with a sample design for your venue. We respond fastest on Instagram.',
+      contactIntro:'Write to us and you’ll get a reply with a sample design for your venue. We respond fastest on Instagram.',
       formName:'Your name', formRest:'Restaurant', formMenu:'Current menu or website (optional)', formStyle:'Preferred style',
       styleSelect:'Choose a style', style1:'Minimal', style2:'Luxury', style3:'Modern', style4:'Dark', style5:'Mediterranean', style6:'Casual', style7:'Fine dining', style8:'Other',
       formEmail:'Email', formMsg:'Message', formMsgPh:'Tell us about your venue and the menu you want.',
       formSubmit:'Send inquiry', formNote:'We usually reply within 24 hours.',
-      formSending:'Sending…', formThanks:'Thank you! We&rsquo;ll be in touch soon.',
+      formSending:'Sending…', formThanks:'Thank you! We’ll be in touch soon.',
       formError:'Something went wrong. Message us on Instagram: @menuframe.studio.bg',
       lbAria:'Browsing portfolio', lbCloseAria:'Close', lbPrevAria:'Previous', lbNextAria:'Next', lbHint:'Scroll or use arrow keys for next',
       footNav:'NAVIGATION', footContact:'CONTACT', copyright:'© 2026 MenuFrame Studio. All rights reserved.', footTagline2:'Design, photography and QR menus for restaurants',

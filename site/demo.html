@@ -612,7 +612,7 @@
   let L = 'bg';
   try {
     const saved = localStorage.getItem('mf-lang');
-    L = saved === 'en' || saved === 'bg' ? saved : ((navigator.language || 'bg').toLowerCase().startsWith('bg') ? 'bg' : 'en');
+    L = saved === 'en' || saved === 'bg' ? saved : 'bg';
   } catch(e) {}
   const t = k => UI[L][k];
   const tx = o => o[L];
@@ -686,7 +686,11 @@
   const select = (i, instant) => {
     if (i === cur || switching) return;
     tabEls.forEach((el, k) => el.setAttribute('aria-selected', String(k === i)));
-    tabEls[i].scrollIntoView({block:'nearest', inline:'center', behavior: reduce || instant ? 'auto' : 'smooth'});
+    // Skip on the very first (automatic) selection: nothing has scrolled
+    // yet, and scrollIntoView here can bubble past the tab strip's own
+    // scroll container and drag the *parent* page's scroll position when
+    // this runs inside the embedded iframe.
+    if (cur !== -1) tabEls[i].scrollIntoView({block:'nearest', inline:'center', behavior: reduce || instant ? 'auto' : 'smooth'});
     moveInd(i, instant);
     setBg(CATS[i].bg);
     history.replaceState(null, '', '#' + CATS[i].id);
