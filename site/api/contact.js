@@ -8,6 +8,50 @@ function escapeHtml(str) {
   );
 }
 
+// Google Sheets treats values written with valueInputOption "USER_ENTERED"
+// as if a person typed them — a leading =, +, -, @ (or tab/CR) turns the
+// cell into a formula (e.g. =HYPERLINK(...) or =IMPORTXML(...)). Prefixing
+// such values with an apostrophe forces Sheets to keep them as plain text.
+function sanitizeForSheets(str) {
+  const s = String(str);
+  return /^[=+\-@\t\r]/.test(s) ? `'${s}` : s;
+}
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MAX_SHORT = 200;
+const MAX_MESSAGE = 2000;
+
+function validateAndNormalize(body) {
+  const clean = (v, max) => String(v ?? "").trim().slice(0, max);
+
+  const name = clean(body.name, MAX_SHORT);
+  const restaurant = clean(body.restaurant, MAX_SHORT);
+  const email = clean(body.email, MAX_SHORT);
+  const currentMenuUrl = clean(body.currentMenuUrl, MAX_SHORT);
+  const preferredStyle = clean(body.preferredStyle, MAX_SHORT);
+  const message = clean(body.message, MAX_MESSAGE);
+
+  if (!name || !restaurant || !email) return { error: "Missing required fields" };
+  if (!EMAIL_RE.test(email)) return { error: "Invalid email" };
+
+  return { data: { name, restaurant, email, currentMenuUrl, preferredStyle, message } };
+}
+
+// Simple in-memory per-IP rate limit: 5 requests / 10 minutes. Resets on
+// cold start, which is fine for a low-traffic contact form — it only needs
+// to blunt scripted abuse, not survive a distributed attack.
+const RATE_LIMIT_MAX = 5;
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const requestLog = new Map();
+
+function isRateLimited(ip) {
+  const now = Date.now();
+  const timestamps = (requestLog.get(ip) || []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+  timestamps.push(now);
+  requestLog.set(ip, timestamps);
+  return timestamps.length > RATE_LIMIT_MAX;
+}
+
 async function sendNotificationEmail({ name, restaurant, email, currentMenuUrl, preferredStyle, message }) {
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.INQUIRY_NOTIFICATION_EMAIL;
@@ -75,12 +119,12 @@ async function appendSheetRow({ name, restaurant, email, currentMenuUrl, preferr
             dateStyle: "short",
             timeStyle: "short",
           }),
-          restaurant,
-          name,
-          email,
-          currentMenuUrl || "",
-          preferredStyle || "",
-          message || "",
+          sanitizeForSheets(restaurant),
+          sanitizeForSheets(name),
+          sanitizeForSheets(email),
+          sanitizeForSheets(currentMenuUrl || ""),
+          sanitizeForSheets(preferredStyle || ""),
+          sanitizeForSheets(message || ""),
           "Ново",
           "",
         ],
@@ -95,13 +139,18 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const { name, restaurant, email, currentMenuUrl, preferredStyle, message } = req.body || {};
-  if (!name || !restaurant || !email) {
-    res.status(400).json({ error: "Missing required fields" });
+  const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || req.socket?.remoteAddress || "unknown";
+  if (isRateLimited(ip)) {
+    res.status(429).json({ error: "Too many requests" });
     return;
   }
 
-  const data = { name, restaurant, email, currentMenuUrl, preferredStyle, message };
+  const { data, error } = validateAndNormalize(req.body || {});
+  if (error) {
+    res.status(400).json({ error });
+    return;
+  }
+
   const failures = [];
 
   const results = await Promise.allSettled([sendNotificationEmail(data), appendSheetRow(data)]);
