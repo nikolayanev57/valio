@@ -76,7 +76,7 @@ async function sendNotificationEmail({ name, restaurant, email, currentMenuUrl, 
   `;
 
   const { error } = await resend.emails.send({
-    from: "MenuFrame Studio <onboarding@resend.dev>",
+    from: "MenuFrame Studio <inquiries@menuframe-studio.com>",
     to,
     subject: `Ново запитване (VALIO): ${restaurant}`,
     html,
