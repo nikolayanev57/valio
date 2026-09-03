@@ -5,6 +5,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="pageTitle">MenuFrame Studio — Меню, което се избира с очите</title>
 <meta id="pageDesc" name="description" content="Студио за дизайн на ресторантски менюта. Дизайн, снимки и QR дигитални менюта, които продават.">
+<link rel="canonical" href="https://www.menuframe-studio.com/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.menuframe-studio.com/">
+<meta property="og:site_name" content="MenuFrame Studio">
+<meta property="og:locale" content="bg_BG">
+<meta property="og:title" content="MenuFrame Studio — Меню, което се избира с очите">
+<meta property="og:description" content="Студио за дизайн на ресторантски менюта. Дизайн, снимки и QR дигитални менюта, които продават.">
+<meta property="og:image" content="https://www.menuframe-studio.com/assets/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="MenuFrame Studio — меню, което се избира с очите">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MenuFrame Studio — Меню, което се избира с очите">
+<meta name="twitter:description" content="Студио за дизайн на ресторантски менюта. Дизайн, снимки и QR дигитални менюта, които продават.">
+<meta name="twitter:image" content="https://www.menuframe-studio.com/assets/og-cover.jpg">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "MenuFrame Studio",
+  "url": "https://www.menuframe-studio.com/",
+  "logo": "https://www.menuframe-studio.com/assets/logo.jpg",
+  "image": "https://www.menuframe-studio.com/assets/og-cover.jpg",
+  "description": "Студио за дизайн на ресторантски менюта. Дизайн, снимки и QR дигитални менюта, които продават.",
+  "email": "menuframe.studio.bg@abv.bg",
+  "telephone": "+359876913396",
+  "areaServed": "BG",
+  "sameAs": ["https://www.instagram.com/menuframe.studio.bg"]
+}
+</script>
 <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -554,6 +584,51 @@
   .step h3{font-size:20px;margin-bottom:10px;font-weight:600}
   .step p{font-size:14.5px;color:var(--tx-light-dim)}
 
+  /* ---------- pricing ---------- */
+  #pricing{
+    background:
+      radial-gradient(800px 460px at 15% 100%,rgba(211,39,29,.05),transparent 60%),
+      radial-gradient(900px 500px at 85% 0%,rgba(179,144,63,.10),transparent 55%),
+      linear-gradient(180deg,#14100c,var(--ink-2));
+  }
+  .pricing-offer{
+    display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;
+    margin-bottom:44px;padding:22px 28px;border-radius:12px;
+    background:linear-gradient(135deg,rgba(211,39,29,.16),rgba(211,39,29,.05));
+    box-shadow:inset 0 0 0 1px rgba(211,39,29,.35);
+  }
+  .pricing-offer b{font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#ff6a5e}
+  .pricing-offer span{font-size:15px;color:var(--tx-dark)}
+  .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .price{
+    position:relative;padding:38px 30px 34px;border-radius:8px;
+    background:linear-gradient(160deg,rgba(216,185,106,.055),rgba(216,185,106,.015));
+    box-shadow:inset 0 0 0 1px var(--line-dark);
+    transition:transform .5s var(--ease),box-shadow .5s var(--ease);
+    will-change:transform;
+  }
+  .price:hover{transform:translateY(-8px);box-shadow:inset 0 0 0 1px rgba(216,185,106,.4),0 30px 60px -30px rgba(0,0,0,.7)}
+  .price-popular{box-shadow:inset 0 0 0 1.5px var(--brass-2)}
+  .price-popular:hover{box-shadow:inset 0 0 0 1.5px var(--brass-2),0 30px 60px -30px rgba(0,0,0,.7)}
+  .price-badge{
+    position:absolute;top:-13px;left:50%;transform:translateX(-50%);
+    background:var(--red);color:#fdf3ee;
+    font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+    padding:7px 16px;border-radius:999px;white-space:nowrap;
+    box-shadow:0 10px 24px -10px rgba(211,39,29,.7);
+  }
+  .price-name{font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-2);margin-bottom:14px}
+  .price-amount{font-family:'Playfair Display',serif;font-size:44px;font-weight:600;margin-bottom:20px}
+  .price-feats{list-style:none;display:grid;gap:10px;padding-top:20px;border-top:1px solid var(--line-dark)}
+  .price-feats li{display:flex;align-items:center;gap:10px;font-size:14.5px;color:var(--tx-dark-dim)}
+  .price-feats li::before{
+    content:"";width:16px;height:16px;flex:none;border-radius:50%;
+    box-shadow:inset 0 0 0 1px rgba(216,185,106,.5);
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d8b96a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 12 4 4 8-8'/%3E%3C/svg%3E") center/9px no-repeat;
+  }
+  .pricing-foot{display:flex;flex-direction:column;align-items:flex-start;gap:14px;margin-top:44px}
+  .pricing-note{font-size:13px;color:var(--tx-dark-dim)}
+
   /* ---------- demo band ---------- */
   #demo{
     background:
@@ -662,7 +737,7 @@
 
   /* ---------- responsive ---------- */
   @media (max-width:1020px){
-    .svc-grid{grid-template-columns:repeat(2,1fr)}
+    .svc-grid,.price-grid{grid-template-columns:repeat(2,1fr)}
     .live-grid{grid-template-columns:1fr;gap:54px}
     .live-art::before{width:380px;height:380px}
     .hero-grid{grid-template-columns:1fr;gap:40px}
@@ -698,7 +773,7 @@
     .m-col{flex-direction:row;gap:18px;transform:none!important}
     .piece{flex:none;width:min(78vw,340px);scroll-snap-align:center}
     .gallery-hint{display:block}
-    .svc-grid{grid-template-columns:1fr}
+    .svc-grid,.price-grid{grid-template-columns:1fr}
     .proc{grid-template-columns:1fr;gap:44px}
     .proc-line{left:31px;right:auto;top:8px;bottom:8px;width:1px;height:auto}
     .proc-line i{transform:scaleY(0);transform-origin:top}
@@ -732,6 +807,7 @@
       <li><a href="#live" data-i18n="navLive">Живо демо</a></li>
       <li><a href="#services" data-i18n="navServices">Услуги</a></li>
       <li><a href="#process" data-i18n="navProcess">Процес</a></li>
+      <li><a href="#pricing" data-i18n="navPricing">Цени</a></li>
       <li><a href="#contact" data-i18n="navContact">Контакт</a></li>
     </ul>
     <div class="lang" id="lang" data-l="bg" role="group" aria-label="Language">
@@ -755,7 +831,8 @@
       <li><a href="#live" data-i18n-html="ovLive"><i>03</i>Живо демо</a></li>
       <li><a href="#services" data-i18n-html="ovServices"><i>04</i>Услуги</a></li>
       <li><a href="#process" data-i18n-html="ovProcess"><i>05</i>Процес</a></li>
-      <li><a href="#contact" data-i18n-html="ovContact"><i>06</i>Контакт</a></li>
+      <li><a href="#pricing" data-i18n-html="ovPricing"><i>06</i>Цени</a></li>
+      <li><a href="#contact" data-i18n-html="ovContact"><i>07</i>Контакт</a></li>
     </ul>
     <div class="menu-side">
       <img src="assets/logo.jpg" alt="MenuFrame Studio лого" data-i18n-aria="logoAlt" style="width:110px;border-radius:18px;box-shadow:0 0 0 1.5px rgba(216,185,106,.4),0 20px 40px -18px rgba(0,0,0,.8)">
@@ -822,15 +899,15 @@
         <figure class="piece rv"><img src="assets/menu-sushi.jpeg" alt="Дигитално меню в японски стил" loading="lazy" width="1254" height="1254">
           <figcaption><span data-i18n="pf1a">Японски стил</span><span data-i18n="pf1b">QR меню</span></figcaption></figure>
         <figure class="piece rv rv-d2"><img src="assets/menu-italian.jpg" alt="Италианско меню, пица и паста" loading="lazy" width="1400" height="1366">
-          <figcaption><span data-i18n="pf2a">Италианско меню</span><span data-i18n="pf2b">Принт меню</span></figcaption></figure>
+          <figcaption><span data-i18n="pf2a">Италианско меню</span><span data-i18n="pf2b">Меню за печат</span></figcaption></figure>
         <figure class="piece rv rv-d3"><img src="assets/promo-demo.jpeg" alt="Безплатна демонстрация, примерен дизайн на телефон" loading="lazy" width="941" height="1672">
           <figcaption><span data-i18n="pf3a">Демонстрация</span><span data-i18n="pf3b">Кампания</span></figcaption></figure>
       </div>
       <div class="m-col">
         <figure class="piece rv rv-d1"><img src="assets/menu-desserts.jpeg" alt="Меню за сладкарница в парижки стил" loading="lazy" width="1254" height="1254">
-          <figcaption><span data-i18n="pf4a">Сладки изкушения</span><span data-i18n="pf4b">Принт меню</span></figcaption></figure>
+          <figcaption><span data-i18n="pf4a">Сладки изкушения</span><span data-i18n="pf4b">Меню за печат</span></figcaption></figure>
         <figure class="piece rv rv-d2"><img src="assets/menu-elegant.jpg" alt="Елегантно меню със златна типография" loading="lazy" width="1400" height="1366">
-          <figcaption><span data-i18n="pf5a">Елегантно меню</span><span data-i18n="pf5b">Принт меню</span></figcaption></figure>
+          <figcaption><span data-i18n="pf5a">Елегантно меню</span><span data-i18n="pf5b">Меню за печат</span></figcaption></figure>
         <figure class="piece rv rv-d3"><img src="assets/promo-process.jpeg" alt="Как работим, четири стъпки" loading="lazy" width="1254" height="1254">
           <figcaption><span data-i18n="pf6a">Как работим</span><span data-i18n="pf6b">Кампания</span></figcaption></figure>
         <figure class="piece rv rv-d4"><img src="assets/promo-tablet.jpeg" alt="Дигитално меню на таблет" loading="lazy" width="1254" height="1254">
@@ -838,9 +915,9 @@
       </div>
       <div class="m-col">
         <figure class="piece rv rv-d2"><img src="assets/menu-bubble.jpeg" alt="Цветно меню за bubble tea напитки" loading="lazy" width="1254" height="1254">
-          <figcaption><span data-i18n="pf8a">Bubble Drinks</span><span data-i18n="pf8b">Принт меню</span></figcaption></figure>
+          <figcaption><span data-i18n="pf8a">Bubble Drinks</span><span data-i18n="pf8b">Меню за печат</span></figcaption></figure>
         <figure class="piece rv rv-d3"><img src="assets/menu-american.jpg" alt="Американско меню, бургери и барбекю" loading="lazy" width="1400" height="1366">
-          <figcaption><span data-i18n="pf9a">Американско меню</span><span data-i18n="pf9b">Принт меню</span></figcaption></figure>
+          <figcaption><span data-i18n="pf9a">Американско меню</span><span data-i18n="pf9b">Меню за печат</span></figcaption></figure>
         <figure class="piece rv rv-d4"><img src="assets/promo-qr.jpg" alt="QR меню, сканирай, разгледай, избери" loading="lazy" width="1400" height="1413">
           <figcaption><span data-i18n="pf10a">QR Меню</span><span data-i18n="pf10b">Кампания</span></figcaption></figure>
       </div>
@@ -896,8 +973,8 @@
       </article>
       <article class="svc rv rv-d1">
         <div class="svc-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
-        <h3 data-i18n="svc2h">Професионални снимки</h3>
-        <p data-i18n="svc2p">Заснемаме ястията така, че да се избират с очите, с апетитна светлина и стил, отговарящ на вашата кухня.</p>
+        <h3 data-i18n="svc2h">Обработка и визуално представяне на снимки</h3>
+        <p data-i18n="svc2p">Обработваме предоставените от вас снимки на ястия — цвят, светлина и кадриране — така че менюто да изглежда стилно и апетитно.</p>
       </article>
       <article class="svc rv rv-d2">
         <div class="svc-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14h1M14 20h1M18 18h3v3h-3z"/></svg></div>
@@ -943,6 +1020,56 @@
         <h3 data-i18n="step4h">Менюто е готово</h3>
         <p data-i18n="step4p">Получавате финалните файлове, готови за печат, и менюто започва да продава вместо вас.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="sect" id="pricing">
+  <div class="wrap">
+    <div class="sect-head">
+      <span class="eyebrow rv" data-i18n="pricingEyebrow">Цени</span>
+      <h2 class="display rv rv-d1" data-i18n="pricingH2">Ясни пакети, без изненади.</h2>
+      <p class="rv rv-d2" data-i18n="pricingIntro">Ориентировъчни цени според броя продукти в менюто — точната оферта зависи от обем и предоставени материали.</p>
+    </div>
+    <div class="pricing-offer rv">
+      <b data-i18n="pricingOfferBadge">Стартова оферта</b>
+      <span data-i18n="pricingOfferText">За първите 3 клиента — специална цена на пакетите по-долу.</span>
+    </div>
+    <div class="price-grid">
+      <div class="price rv">
+        <div class="price-name" data-i18n="price1Name">Малко меню</div>
+        <div class="price-amount">25&nbsp;€</div>
+        <ul class="price-feats">
+          <li data-i18n="price1Feat1">До 15 продукта</li>
+          <li data-i18n="price1Feat2">Дизайн и готово дигитално меню</li>
+        </ul>
+      </div>
+      <div class="price price-popular rv rv-d1">
+        <span class="price-badge" data-i18n="pricingPopularBadge">Най-предпочитано</span>
+        <div class="price-name" data-i18n="price2Name">Стандартно</div>
+        <div class="price-amount">45&nbsp;€</div>
+        <ul class="price-feats">
+          <li data-i18n="price2Feat1">До 40 продукта</li>
+          <li data-i18n="price2Feat2">Категории и QR код</li>
+          <li data-i18n="price2Feat3">Съставки и алергени</li>
+        </ul>
+      </div>
+      <div class="price rv rv-d2">
+        <div class="price-name" data-i18n="price3Name">Голямо меню</div>
+        <div class="price-amount">70&nbsp;€</div>
+        <ul class="price-feats">
+          <li data-i18n="price3Feat1">До 80 продукта</li>
+          <li data-i18n="price3Feat2">QR код и дизайн на табелка за маса</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pricing-foot rv rv-d3">
+      <a class="btn btn-gold magnetic" href="#contact">
+        <span data-i18n="pricingCtaText">Пиши ни за безплатна демонстрация</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <p class="pricing-note" data-i18n="pricingNote">Цените важат при предоставени текстове и снимки. Допълнителна обработка се уточнява отделно.</p>
     </div>
   </div>
 </section>
@@ -1113,9 +1240,9 @@
       title:'MenuFrame Studio — Меню, което се избира с очите',
       desc:'Студио за дизайн на ресторантски менюта. Дизайн, снимки и QR дигитални менюта, които продават.',
       menuBtnAria:'Отвори менюто', brandHint:'Меню',
-      navPortfolio:'Портфолио', navLive:'Живо демо', navServices:'Услуги', navProcess:'Процес', navContact:'Контакт', navCta:'Безплатна демонстрация',
+      navPortfolio:'Портфолио', navLive:'Живо демо', navServices:'Услуги', navProcess:'Процес', navPricing:'Цени', navContact:'Контакт', navCta:'Безплатна демонстрация',
       ovAria:'Навигация', ovCloseAria:'Затвори менюто',
-      ovHome:'<i>01</i>Начало', ovPortfolio:'<i>02</i>Портфолио', ovLive:'<i>03</i>Живо демо', ovServices:'<i>04</i>Услуги', ovProcess:'<i>05</i>Процес', ovContact:'<i>06</i>Контакт',
+      ovHome:'<i>01</i>Начало', ovPortfolio:'<i>02</i>Портфолио', ovLive:'<i>03</i>Живо демо', ovServices:'<i>04</i>Услуги', ovProcess:'<i>05</i>Процес', ovPricing:'<i>06</i>Цени', ovContact:'<i>07</i>Контакт',
       logoAlt:'MenuFrame Studio лого', tagline:'„Меню, което се избира с очите."', ovCta:'Безплатна демонстрация',
       heroEyebrow:'Студио за дизайн на менюта',
       heroH1:'Менюто е най&#8209;добрият <span class="gold">продавач</span> на вашия ресторант.',
@@ -1125,9 +1252,9 @@
       heroScroll:'Разгледай<span class="dot"></span>',
       pfEyebrow:'Портфолио', pfH2:'Менюта, подредени като галерия.',
       pfIntro:'Всеки проект е демонстрационен дизайн от студиото, преди адаптация към конкретен ресторант. Реалните клиентски проекти ще бъдат добавени тук.',
-      pf1a:'Японски стил', pf1b:'QR меню', pf2a:'Италианско меню', pf2b:'Принт меню', pf3a:'Демонстрация', pf3b:'Кампания',
-      pf4a:'Сладки изкушения', pf4b:'Принт меню', pf5a:'Елегантно меню', pf5b:'Принт меню', pf6a:'Как работим', pf6b:'Кампания', pf7a:'Меню с очите', pf7b:'Кампания',
-      pf8a:'Bubble Drinks', pf8b:'Принт меню', pf9a:'Американско меню', pf9b:'Принт меню', pf10a:'QR Меню', pf10b:'Кампания',
+      pf1a:'Японски стил', pf1b:'QR меню', pf2a:'Италианско меню', pf2b:'Меню за печат', pf3a:'Демонстрация', pf3b:'Кампания',
+      pf4a:'Сладки изкушения', pf4b:'Меню за печат', pf5a:'Елегантно меню', pf5b:'Меню за печат', pf6a:'Как работим', pf6b:'Кампания', pf7a:'Меню с очите', pf7b:'Кампания',
+      pf8a:'Bubble Drinks', pf8b:'Меню за печат', pf9a:'Американско меню', pf9b:'Меню за печат', pf10a:'QR Меню', pf10b:'Кампания',
       galleryHint:'Плъзни настрани, за да разгледаш →',
       liveEyebrow:'Живо демо',
       liveH2:'Пробвайте меню, което <span class="gold" style="font-style:italic;background:linear-gradient(115deg,#e6cd8b,#b3903f 55%,#e0c47c);-webkit-background-clip:text;background-clip:text;color:transparent">работи</span>.',
@@ -1138,7 +1265,7 @@
       svcEyebrow:'Услуги', svcH2:'Всичко, което едно меню трябва да умее.',
       svcIntro:'От първата снимка до финалните файлове за печат, всяка стъпка е направена с внимание към детайла.',
       svc1h:'Дизайн на меню', svc1p:'Изграждаме менюто като дизайн обект, с типография, подредба и акценти, които водят окото към правилните ястия.',
-      svc2h:'Професионални снимки', svc2p:'Заснемаме ястията така, че да се избират с очите, с апетитна светлина и стил, отговарящ на вашата кухня.',
+      svc2h:'Обработка и визуално представяне на снимки', svc2p:'Обработваме предоставените от вас снимки на ястия — цвят, светлина и кадриране — така че менюто да изглежда стилно и апетитно.',
       svc3h:'QR дигитално меню', svc3p:'Елегантно дигитално меню с QR код на масата, което се отваря мигновено и се обновява без нов печат.',
       svc4h:'Редизайн и сезонни обновления', svc4p:'Освежаваме съществуващи менюта и поддържаме сезонни промени, така че менюто винаги да е актуално и подредено.',
       procEyebrow:'Как работим', procH2:'Четири стъпки до готово меню.',
@@ -1147,6 +1274,15 @@
       step2h:'Създаваме дизайна', step2p:'Изграждаме дизайна и снимките, съобразени с бранда и атмосферата на вашето заведение.',
       step3h:'Получавате QR код', step3p:'Дигиталното меню е готово с QR код за масите, а промените по него са бързи и лесни.',
       step4h:'Менюто е готово', step4p:'Получавате финалните файлове, готови за печат, и менюто започва да продава вместо вас.',
+      pricingEyebrow:'Цени', pricingH2:'Ясни пакети, без изненади.',
+      pricingIntro:'Ориентировъчни цени според броя продукти в менюто — точната оферта зависи от обем и предоставени материали.',
+      pricingOfferBadge:'Стартова оферта', pricingOfferText:'За първите 3 клиента — специална цена на пакетите по-долу.',
+      price1Name:'Малко меню', price1Feat1:'До 15 продукта', price1Feat2:'Дизайн и готово дигитално меню',
+      price2Name:'Стандартно', price2Feat1:'До 40 продукта', price2Feat2:'Категории и QR код', price2Feat3:'Съставки и алергени',
+      price3Name:'Голямо меню', price3Feat1:'До 80 продукта', price3Feat2:'QR код и дизайн на табелка за маса',
+      pricingPopularBadge:'Най-предпочитано',
+      pricingCtaText:'Пиши ни за безплатна демонстрация',
+      pricingNote:'Цените важат при предоставени текстове и снимки. Допълнителна обработка се уточнява отделно.',
       demoEyebrow:'Безплатна демонстрация', demoH2:'Вижте как би изглеждало вашето меню.',
       demoStep1:'Изпратете ни меню или линк<small>Работим с това, което вече имате.</small>',
       demoStep2:'Изберете предпочитан стил<small>Елегантен, модерен, класически или по ваша идея.</small>',
@@ -1167,9 +1303,9 @@
       title:'MenuFrame Studio — A menu you choose with your eyes',
       desc:'Restaurant menu design studio. Design, photography and QR digital menus that sell.',
       menuBtnAria:'Open menu', brandHint:'Menu',
-      navPortfolio:'Portfolio', navLive:'Live demo', navServices:'Services', navProcess:'Process', navContact:'Contact', navCta:'Free demo',
+      navPortfolio:'Portfolio', navLive:'Live demo', navServices:'Services', navProcess:'Process', navPricing:'Pricing', navContact:'Contact', navCta:'Free demo',
       ovAria:'Navigation', ovCloseAria:'Close menu',
-      ovHome:'<i>01</i>Home', ovPortfolio:'<i>02</i>Portfolio', ovLive:'<i>03</i>Live demo', ovServices:'<i>04</i>Services', ovProcess:'<i>05</i>Process', ovContact:'<i>06</i>Contact',
+      ovHome:'<i>01</i>Home', ovPortfolio:'<i>02</i>Portfolio', ovLive:'<i>03</i>Live demo', ovServices:'<i>04</i>Services', ovProcess:'<i>05</i>Process', ovPricing:'<i>06</i>Pricing', ovContact:'<i>07</i>Contact',
       logoAlt:'MenuFrame Studio logo', tagline:'“A menu you choose with your eyes.”', ovCta:'Free demo',
       heroEyebrow:'Menu design studio',
       heroH1:'Your menu is your restaurant&rsquo;s best <span class="gold">salesperson</span>.',
@@ -1192,7 +1328,7 @@
       svcEyebrow:'Services', svcH2:'Everything a menu needs to do.',
       svcIntro:'From the first photo to the final print-ready files, every step is crafted with attention to detail.',
       svc1h:'Menu design', svc1p:'We build the menu as a design object — typography, layout and accents that guide the eye to the right dishes.',
-      svc2h:'Professional photography', svc2p:'We shoot dishes so they are chosen with the eyes — appetizing light and a style that matches your kitchen.',
+      svc2h:'Photo editing & visual presentation', svc2p:'We edit the dish photos you provide — color, light and cropping — so your menu looks polished and appetizing.',
       svc3h:'QR digital menu', svc3p:'An elegant digital menu with a QR code on the table, opens instantly and updates without reprinting.',
       svc4h:'Redesign & seasonal updates', svc4p:'We refresh existing menus and keep up with seasonal changes, so the menu always stays current and polished.',
       procEyebrow:'How we work', procH2:'Four steps to a finished menu.',
@@ -1201,6 +1337,15 @@
       step2h:'We create the design', step2p:'We build the design and photography to match your brand and your venue’s atmosphere.',
       step3h:'You get a QR code', step3p:'Your digital menu is ready with a QR code for the tables, and updates are quick and easy.',
       step4h:'Your menu is ready', step4p:'You receive the final, print-ready files, and the menu starts selling on your behalf.',
+      pricingEyebrow:'Pricing', pricingH2:'Clear packages, no surprises.',
+      pricingIntro:'Indicative prices based on the number of menu items — the exact quote depends on volume and the materials you provide.',
+      pricingOfferBadge:'Launch offer', pricingOfferText:'For the first 3 clients — a special price on the packages below.',
+      price1Name:'Small menu', price1Feat1:'Up to 15 items', price1Feat2:'Design and a ready digital menu',
+      price2Name:'Standard', price2Feat1:'Up to 40 items', price2Feat2:'Categories and QR code', price2Feat3:'Ingredients and allergens',
+      price3Name:'Large menu', price3Feat1:'Up to 80 items', price3Feat2:'QR code and table-tent design',
+      pricingPopularBadge:'Most popular',
+      pricingCtaText:'Message us for a free demo',
+      pricingNote:'Prices apply when text and photos are provided. Additional editing is quoted separately.',
       demoEyebrow:'Free demo', demoH2:'See what your menu could look like.',
       demoStep1:'Send us a menu or a link<small>We work with what you already have.</small>',
       demoStep2:'Choose your preferred style<small>Elegant, modern, classic, or your own idea.</small>',
