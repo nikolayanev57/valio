@@ -2,6 +2,17 @@
 <html lang="bg">
 <head>
 <meta charset="UTF-8">
+<script>
+(function(){
+  try{
+    var t = localStorage.getItem('mf-theme');
+    if(t!=='dark' && t!=='light'){
+      t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Ателие — Дигитално меню (демо от MenuFrame Studio)</title>
 <meta name="description" content="Живо демонстрационно QR меню от MenuFrame Studio. Разгледайте категориите и отворете ястие за детайли.">
@@ -26,6 +37,7 @@
     --glass-2:rgba(255,248,232,.10);
     --glass-line:rgba(216,185,106,.30);
     --glass-hi:rgba(255,255,255,.14);
+    --on-brass:#0d0a07;
     --ease:cubic-bezier(.22,.9,.28,1);
     --spring:cubic-bezier(.34,1.4,.44,1);
     --sat:env(safe-area-inset-top,0px);
@@ -39,7 +51,7 @@
     -webkit-font-smoothing:antialiased;overflow-x:hidden;
     min-height:100svh;
   }
-  ::selection{background:var(--brass);color:var(--ink)}
+  ::selection{background:var(--brass);color:var(--on-brass)}
   img{max-width:100%;display:block}
   button{font-family:inherit;color:inherit}
   h1,h2,h3,.serif{font-family:'Playfair Display',Georgia,serif}
@@ -89,7 +101,7 @@
   .crest{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--tx)}
   .crest .mono{
     width:46px;height:46px;border-radius:50%;flex:none;display:grid;place-items:center;
-    font-family:'Playfair Display',serif;font-weight:600;font-size:22px;color:var(--ink);
+    font-family:'Playfair Display',serif;font-weight:600;font-size:22px;color:var(--on-brass);
     background:linear-gradient(135deg,#efd89a,#b3903f 60%,#d8b96a);
     box-shadow:0 0 0 1px rgba(216,185,106,.5),0 0 0 5px rgba(216,185,106,.10),0 10px 24px -10px rgba(216,185,106,.55);
   }
@@ -123,7 +135,7 @@
   .lang button:hover{color:var(--tx)}
   .lang button:active{transform:scale(.94)}
   .lang button:focus-visible{outline:2px solid var(--brass-2);outline-offset:-2px}
-  .lang button[aria-pressed="true"]{color:var(--ink)}
+  .lang button[aria-pressed="true"]{color:var(--on-brass)}
   .lang .ind{
     position:absolute;left:4px;top:4px;width:40px;height:32px;border-radius:999px;z-index:0;
     background:linear-gradient(135deg,#f0d998,#c9a75a 55%,#e3c67a);
@@ -131,6 +143,25 @@
     transition:transform .45s var(--spring);
   }
   .lang[data-l="en"] .ind{transform:translateX(40px)}
+
+  /* theme switch */
+  .theme-switch{position:relative;padding:4px}
+  .theme-switch button{
+    position:relative;z-index:1;width:36px;height:32px;border:none;background:none;cursor:pointer;border-radius:999px;
+    display:grid;place-items:center;color:var(--tx-dim);
+    transition:color .35s ease,transform .3s var(--ease);
+  }
+  .theme-switch button:hover{color:var(--tx)}
+  .theme-switch button:active{transform:scale(.94)}
+  .theme-switch button:focus-visible{outline:2px solid var(--brass-2);outline-offset:-2px}
+  .theme-switch button[aria-pressed="true"]{color:var(--on-brass)}
+  .theme-switch .ind{
+    position:absolute;left:4px;top:4px;width:36px;height:32px;border-radius:999px;z-index:0;
+    background:linear-gradient(135deg,#f0d998,#c9a75a 55%,#e3c67a);
+    box-shadow:0 6px 16px -6px rgba(216,185,106,.7),inset 0 1px 0 rgba(255,255,255,.55);
+    transition:transform .45s var(--spring);
+  }
+  .theme-switch[data-t="dark"] .ind{transform:translateX(36px)}
 
   /* ============ hero ============ */
   .hero{padding:44px 0 26px;text-align:center}
@@ -195,7 +226,7 @@
   .tab:hover{color:var(--tx)}
   .tab:active{transform:scale(.96)}
   .tab:focus-visible{outline:2px solid var(--brass-2);outline-offset:-2px}
-  .tab[aria-selected="true"]{color:var(--ink)}
+  .tab[aria-selected="true"]{color:var(--on-brass)}
   .tab[aria-selected="true"] .n{color:rgba(13,10,7,.6)}
   .tab-ind{
     position:absolute;left:0;top:0;height:100%;width:100px;border-radius:999px;z-index:0;
@@ -268,7 +299,7 @@
   .price{
     position:absolute;right:12px;bottom:12px;z-index:2;
     padding:7px 13px;border-radius:999px;
-    font-family:'Playfair Display',serif;font-weight:600;font-size:16px;letter-spacing:.01em;color:var(--ink);
+    font-family:'Playfair Display',serif;font-weight:600;font-size:16px;letter-spacing:.01em;color:var(--on-brass);
     background:linear-gradient(135deg,#f0d998,#c9a75a 60%,#e3c67a);
     box-shadow:0 8px 20px -8px rgba(216,185,106,.8),inset 0 1px 0 rgba(255,255,255,.5);
   }
@@ -379,6 +410,65 @@
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
   }
+
+  /* ============ LIGHT THEME ============ */
+  [data-theme="light"]{
+    --ink:#F7F1E8;
+    --brass:#C6A15B;
+    --brass-2:#C6A15B;
+    --brass-dim:#a9884d;
+    --red:#E94A3F;
+    --tx:#2B1B15;
+    --tx-dim:rgba(43,27,21,.62);
+    --tx-faint:rgba(43,27,21,.4);
+    --glass:rgba(43,27,21,.05);
+    --glass-line:rgba(198,161,91,.35);
+    --on-brass:#2B1B15;
+  }
+  [data-theme="light"] .bg::after{
+    background:
+      radial-gradient(900px 520px at 85% -5%,rgba(198,161,91,.14),transparent 60%),
+      radial-gradient(700px 500px at 5% 100%,rgba(233,74,63,.05),transparent 60%),
+      linear-gradient(180deg,rgba(247,241,232,.55) 0%,rgba(247,241,232,.80) 45%,rgba(247,241,232,.94) 100%);
+  }
+  [data-theme="light"] .hero h1{
+    background:linear-gradient(115deg,#b8843a 0%,#8a6329 40%,#6d4f1f 62%,#a9884d 100%);
+    -webkit-background-clip:text;background-clip:text;
+  }
+  [data-theme="light"] .tabs{
+    background:linear-gradient(180deg,rgba(43,27,21,.05),rgba(43,27,21,.02));
+    box-shadow:
+      inset 0 1px 0 var(--glass-hi),
+      inset 0 0 0 1px var(--glass-line),
+      0 24px 50px -22px rgba(43,27,21,.2),
+      0 12px 30px -18px rgba(198,161,91,.2);
+  }
+  [data-theme="light"] .dish{
+    background:#FFFDFC;
+    box-shadow:
+      inset 0 1px 0 var(--glass-hi),
+      inset 0 0 0 1px rgba(198,161,91,.35),
+      0 30px 60px -30px rgba(43,27,21,.18),
+      0 14px 30px -20px rgba(198,161,91,.15);
+  }
+  [data-theme="light"] .dish:hover,[data-theme="light"] .dish:focus-within{
+    box-shadow:
+      inset 0 1px 0 var(--glass-hi),
+      inset 0 0 0 1px rgba(198,161,91,.6),
+      0 44px 80px -34px rgba(43,27,21,.22),
+      0 24px 46px -22px rgba(198,161,91,.3);
+  }
+  [data-theme="light"] .dish .ph,[data-theme="light"] .sheet .ph{background:#f0e8da}
+  [data-theme="light"] .sheet{
+    background:linear-gradient(180deg,#FFFDFC,#F7F1E8);
+    box-shadow:inset 0 1px 0 var(--glass-hi),inset 0 0 0 1px var(--glass-line),0 -30px 80px -30px rgba(43,27,21,.2);
+  }
+  [data-theme="light"] .sheet .grip{background:rgba(43,27,21,.2)}
+  [data-theme="light"] .sheet .p{
+    background:linear-gradient(115deg,#b8843a,#8a6329 60%,#a9884d);
+    -webkit-background-clip:text;background-clip:text;
+  }
+  [data-theme="light"] .btn-ghost{box-shadow:inset 0 0 0 1px rgba(198,161,91,.5),inset 0 1px 0 var(--glass-hi)}
 </style>
 </head>
 <body>
@@ -401,6 +491,15 @@
         <span class="ind" aria-hidden="true"></span>
         <button type="button" data-lang="bg" aria-pressed="true" lang="bg">BG</button>
         <button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button>
+      </div>
+      <div class="glass-pill theme-switch" id="themeSwitch" data-t="dark" role="group" aria-label="Theme">
+        <span class="ind" aria-hidden="true"></span>
+        <button type="button" data-theme-btn="light" aria-pressed="false" aria-label="Светла тема">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        </button>
+        <button type="button" data-theme-btn="dark" aria-pressed="true" aria-label="Тъмна тема">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
       </div>
       <a class="glass-pill studio-tag" href="index.html" title="MenuFrame Studio">
         <img src="assets/logo.jpg" alt="">
@@ -785,6 +884,34 @@
     setTimeout(() => { apply(); page.classList.remove('swap'); }, 240);
   };
   langBox.addEventListener('click', e => { const b = e.target.closest('[data-lang]'); if (b) setLang(b.dataset.lang); });
+
+  /* theme toggle */
+  const themeSwitch = document.getElementById('themeSwitch');
+  let theme = document.documentElement.getAttribute('data-theme') || 'dark';
+  const applyTheme = () => {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeSwitch.dataset.t = theme;
+    themeSwitch.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeBtn === theme)));
+    const tc = document.querySelector('meta[name="theme-color"]');
+    if (tc) tc.setAttribute('content', theme === 'light' ? '#F7F1E8' : '#0d0a07');
+  };
+  const setTheme = (val) => {
+    if (val === theme) return;
+    theme = val;
+    try { localStorage.setItem('mf-theme', val); } catch(e) {}
+    applyTheme();
+  };
+  themeSwitch.addEventListener('click', e => { const b = e.target.closest('[data-theme-btn]'); if (b) setTheme(b.dataset.themeBtn); });
+  applyTheme();
+  try {
+    if (localStorage.getItem('mf-theme') === null) {
+      matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
+        if (localStorage.getItem('mf-theme') !== null) return;
+        theme = e.matches ? 'light' : 'dark';
+        applyTheme();
+      });
+    }
+  } catch(e) {}
 })();
 </script>
 </body>
