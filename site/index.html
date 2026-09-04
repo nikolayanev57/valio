@@ -2,6 +2,17 @@
 <html lang="bg">
 <head>
 <meta charset="UTF-8">
+<script>
+(function(){
+  try{
+    var t = localStorage.getItem('mf-theme');
+    if(t!=='dark' && t!=='light'){
+      t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="pageTitle">MenuFrame Studio — Меню, което се избира с очите</title>
 <meta id="pageDesc" name="description" content="Студио за дизайн на ресторантски менюта. Дизайн, снимки и QR дигитални менюта, които продават.">
@@ -58,6 +69,7 @@
     --tx-dark-dim:rgba(239,231,214,.62);
     --tx-light:#1c1712;
     --tx-light-dim:rgba(28,23,18,.66);
+    --on-brass:#16120e;
     --ease:cubic-bezier(.22,.9,.28,1);
   }
   *{margin:0;padding:0;box-sizing:border-box}
@@ -70,7 +82,7 @@
     -webkit-font-smoothing:antialiased;
     overflow-x:hidden;
   }
-  ::selection{background:var(--brass);color:var(--ink)}
+  ::selection{background:var(--brass);color:var(--on-brass)}
   img{max-width:100%;display:block}
 
   h1,h2,h3,.serif{font-family:'Playfair Display',Georgia,serif}
@@ -155,7 +167,7 @@
     font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--tx-dark-dim);
     transition:color .35s ease;
   }
-  .lang button[aria-pressed="true"]{color:var(--ink)}
+  .lang button[aria-pressed="true"]{color:var(--on-brass)}
   .lang button:focus-visible{outline:2px solid var(--brass-2);outline-offset:2px}
   .lang .ind{
     position:absolute;left:3px;top:3px;width:34px;height:28px;border-radius:999px;z-index:0;
@@ -164,6 +176,28 @@
     transition:transform .45s cubic-bezier(.34,1.4,.44,1);
   }
   .lang[data-l="en"] .ind{transform:translateX(34px)}
+
+  /* ---------- theme toggle ---------- */
+  .theme-switch{
+    position:relative;display:inline-flex;align-items:center;padding:3px;border-radius:999px;flex:none;
+    background:rgba(216,185,106,.06);
+    box-shadow:inset 0 0 0 1px rgba(216,185,106,.28);
+    margin-left:8px;
+  }
+  .theme-switch button{
+    position:relative;z-index:1;width:34px;height:28px;border:none;background:none;cursor:pointer;border-radius:999px;
+    display:grid;place-items:center;color:var(--tx-dark-dim);
+    transition:color .35s ease;
+  }
+  .theme-switch button[aria-pressed="true"]{color:var(--on-brass)}
+  .theme-switch button:focus-visible{outline:2px solid var(--brass-2);outline-offset:2px}
+  .theme-switch .ind{
+    position:absolute;left:3px;top:3px;width:34px;height:28px;border-radius:999px;z-index:0;
+    background:linear-gradient(135deg,#e6cd8b,#b3903f 55%,#e0c47c);
+    box-shadow:0 6px 16px -6px rgba(216,185,106,.75);
+    transition:transform .45s cubic-bezier(.34,1.4,.44,1);
+  }
+  .theme-switch[data-t="dark"] .ind{transform:translateX(34px)}
 
   /* ---------- full-screen menu overlay ---------- */
   .menu-overlay{
@@ -718,7 +752,7 @@
   }
   .field select:invalid{color:var(--tx-dark-dim)}
   .field select option{background:var(--ink);color:var(--tx-dark);padding:10px}
-  .field select option:checked,.field select option:hover{background:var(--brass-2);color:var(--ink)}
+  .field select option:checked,.field select option:hover{background:var(--brass-2);color:var(--on-brass)}
   .form-foot{grid-column:1/-1;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
   .form-note{font-size:12.5px;color:var(--tx-dark-dim);letter-spacing:.03em}
 
@@ -793,6 +827,100 @@
     *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
     .rv{opacity:1;transform:none}
   }
+
+  /* ============ LIGHT THEME ============ */
+  /* .phone/.phone-screen/.frame (live-demo mockup) and .piece (portfolio frames)
+     are intentionally left untouched — they stay dark in both themes. */
+  [data-theme="light"]{
+    --ink:#F7F1E8;
+    --ink-2:#F7F1E8;
+    --ink-3:#F7F1E8;
+    --brass:#C6A15B;
+    --brass-2:#C6A15B;
+    --brass-dim:#a9884d;
+    --red:#E94A3F;
+    --line-dark:rgba(43,27,21,.16);
+    --tx-dark:#2B1B15;
+    --tx-dark-dim:rgba(43,27,21,.62);
+    --on-brass:#2B1B15;
+    --green-accent:#8FA58C;
+  }
+  [data-theme="light"] body{background:#F7F1E8}
+  [data-theme="light"] nav::before{
+    background:linear-gradient(to bottom,rgba(247,241,232,.92),rgba(247,241,232,.78));
+    border-bottom:1px solid rgba(198,161,91,.25);
+  }
+  [data-theme="light"] .menu-overlay{
+    background:
+      radial-gradient(900px 600px at 80% 15%,rgba(198,161,91,.12),transparent 60%),
+      linear-gradient(160deg,#FFFDFC 0%,#F7F1E8 100%);
+  }
+  [data-theme="light"] .btn-gold{
+    background:linear-gradient(135deg,#f0685c,#E94A3F 60%,#ef5d51);
+    color:#FFFDFC;
+    box-shadow:0 10px 30px -10px rgba(233,74,63,.45),0 4px 12px -6px rgba(0,0,0,.15);
+  }
+  [data-theme="light"] .btn-ghost{
+    background:#FFFDFC;
+    box-shadow:inset 0 0 0 1.5px var(--brass);
+  }
+  [data-theme="light"] .btn-ghost:hover,[data-theme="light"] .btn-ghost:focus-visible{box-shadow:inset 0 0 0 1.5px var(--brass-dim)}
+  [data-theme="light"] .hero{
+    background:
+      radial-gradient(1100px 600px at 78% 18%,rgba(198,161,91,.14),transparent 60%),
+      radial-gradient(800px 500px at 12% 85%,rgba(233,74,63,.05),transparent 60%),
+      linear-gradient(180deg,#FFFDFC 0%,#F7F1E8 55%,#F7F1E8 100%);
+  }
+  [data-theme="light"] .gold{
+    background:linear-gradient(115deg,#b8843a,#8a6329 55%,#a9884d) !important;
+    -webkit-background-clip:text !important;background-clip:text !important;color:transparent !important;
+  }
+  [data-theme="light"] #live{
+    background:
+      radial-gradient(900px 560px at 85% 30%,rgba(198,161,91,.16),transparent 60%),
+      radial-gradient(700px 420px at 10% 90%,rgba(233,74,63,.05),transparent 60%),
+      linear-gradient(180deg,#F7F1E8,#FFFDFC 60%,#F7F1E8);
+  }
+  [data-theme="light"] #services{
+    background:
+      radial-gradient(900px 500px at 85% 0%,rgba(198,161,91,.10),transparent 55%),
+      linear-gradient(180deg,#FFFDFC,#F7F1E8);
+  }
+  [data-theme="light"] .svc{background:#FFFDFC}
+  [data-theme="light"] .svc:hover{box-shadow:inset 0 0 0 1px var(--brass),0 30px 60px -30px rgba(43,27,21,.15)}
+  [data-theme="light"] .svc:nth-child(4) .svc-ico{color:var(--green-accent)}
+  [data-theme="light"] #pricing{
+    background:
+      radial-gradient(800px 460px at 15% 100%,rgba(233,74,63,.05),transparent 60%),
+      radial-gradient(900px 500px at 85% 0%,rgba(198,161,91,.10),transparent 55%),
+      linear-gradient(180deg,#FFFDFC,#F7F1E8);
+  }
+  [data-theme="light"] .pricing-offer{
+    background:linear-gradient(135deg,rgba(233,74,63,.12),rgba(233,74,63,.04));
+    box-shadow:inset 0 0 0 1px rgba(233,74,63,.3);
+  }
+  [data-theme="light"] .pricing-offer b{color:#c73a30}
+  [data-theme="light"] .price{background:#FFFDFC}
+  [data-theme="light"] .price:hover{box-shadow:inset 0 0 0 1px var(--brass),0 30px 60px -30px rgba(43,27,21,.15)}
+  [data-theme="light"] #demo{
+    background:
+      radial-gradient(800px 420px at 15% 20%,rgba(198,161,91,.13),transparent 60%),
+      linear-gradient(160deg,#F7F1E8,#FFFDFC 60%,#F7F1E8);
+  }
+  [data-theme="light"] .demo-steps li{background:#FFFDFC}
+  [data-theme="light"] .demo-steps li:hover{box-shadow:inset 0 0 0 1px var(--brass)}
+  [data-theme="light"] #contact{
+    background:
+      radial-gradient(1000px 560px at 80% 100%,rgba(198,161,91,.12),transparent 60%),
+      linear-gradient(180deg,#F7F1E8,#FFFDFC);
+  }
+  [data-theme="light"] .field input,[data-theme="light"] .field textarea,[data-theme="light"] .field select{
+    background:#FFFDFC;
+  }
+  [data-theme="light"] .field input:hover,[data-theme="light"] .field textarea:hover,[data-theme="light"] .field select:hover{box-shadow:inset 0 0 0 1px var(--brass)}
+  [data-theme="light"] footer{background:#F7F1E8;border-top:1px solid rgba(198,161,91,.25)}
+  [data-theme="light"] .foot-brand img{box-shadow:0 0 0 1px rgba(198,161,91,.35)}
+  [data-theme="light"] .foot-bottom{border-top:1px solid rgba(198,161,91,.2);color:rgba(43,27,21,.4)}
 </style>
 </head>
 <body>
@@ -818,6 +946,15 @@
       <span class="ind" aria-hidden="true"></span>
       <button type="button" data-lang="bg" aria-pressed="true" lang="bg">BG</button>
       <button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button>
+    </div>
+    <div class="theme-switch" id="themeSwitch" data-t="dark" role="group" aria-label="Theme">
+      <span class="ind" aria-hidden="true"></span>
+      <button type="button" data-theme-btn="light" aria-pressed="false" aria-label="Светла тема">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </button>
+      <button type="button" data-theme-btn="dark" aria-pressed="true" aria-label="Тъмна тема">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
     </div>
     <a class="btn btn-gold btn-sm magnetic" href="#demo" data-i18n="navCta">Безплатна демонстрация</a>
   </div>
@@ -977,7 +1114,7 @@
       </article>
       <article class="svc rv rv-d1">
         <div class="svc-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
-        <h3 data-i18n="svc2h">Обработка и визуално представяне на снимки</h3>
+        <h3 data-i18n="svc2h">Обработка на снимки</h3>
         <p data-i18n="svc2p">Обработваме предоставените от вас снимки на ястия — цвят, светлина и кадриране — така че менюто да изглежда стилно и апетитно.</p>
       </article>
       <article class="svc rv rv-d2">
@@ -1279,7 +1416,7 @@
       svcEyebrow:'Услуги', svcH2:'Всичко, което едно меню трябва да умее.',
       svcIntro:'От първата снимка до финалните файлове за печат, всяка стъпка е направена с внимание към детайла.',
       svc1h:'Дизайн на меню', svc1p:'Изграждаме менюто като дизайн обект, с типография, подредба и акценти, които водят окото към правилните ястия.',
-      svc2h:'Обработка и визуално представяне на снимки', svc2p:'Обработваме предоставените от вас снимки на ястия — цвят, светлина и кадриране — така че менюто да изглежда стилно и апетитно.',
+      svc2h:'Обработка на снимки', svc2p:'Обработваме предоставените от вас снимки на ястия — цвят, светлина и кадриране — така че менюто да изглежда стилно и апетитно.',
       svc3h:'QR дигитално меню', svc3p:'Елегантно дигитално меню с QR код на масата, което се отваря мигновено и се обновява без нов печат.',
       svc4h:'Редизайн и сезонни обновления', svc4p:'Освежаваме съществуващи менюта и поддържаме сезонни промени, така че менюто винаги да е актуално и подредено.',
       procEyebrow:'Как работим', procH2:'Четири стъпки до готово меню.',
@@ -1400,6 +1537,32 @@
   };
   langBox.addEventListener('click', e => { const b = e.target.closest('[data-lang]'); if (b) setLang(b.dataset.lang); });
   applyI18n();
+
+  /* theme toggle */
+  const themeSwitch = document.getElementById('themeSwitch');
+  let theme = document.documentElement.getAttribute('data-theme') || 'dark';
+  const applyTheme = () => {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeSwitch.dataset.t = theme;
+    themeSwitch.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeBtn === theme)));
+  };
+  const setTheme = (val) => {
+    if (val === theme) return;
+    theme = val;
+    try { localStorage.setItem('mf-theme', val); } catch(e) {}
+    applyTheme();
+  };
+  themeSwitch.addEventListener('click', e => { const b = e.target.closest('[data-theme-btn]'); if (b) setTheme(b.dataset.themeBtn); });
+  applyTheme();
+  try {
+    if (localStorage.getItem('mf-theme') === null) {
+      matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
+        if (localStorage.getItem('mf-theme') !== null) return;
+        theme = e.matches ? 'light' : 'dark';
+        applyTheme();
+      });
+    }
+  } catch(e) {}
 
   /* nav background on scroll */
   const nav = document.getElementById('nav');

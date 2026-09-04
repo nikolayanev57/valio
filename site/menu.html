@@ -2,6 +2,17 @@
 <html lang="bg">
 <head>
 <meta charset="UTF-8">
+<script>
+(function(){
+  try{
+    var t = localStorage.getItem('mf-theme');
+    if(t!=='dark' && t!=='light'){
+      t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MenuFrame Studio — Меню, което се избира с очите</title>
 <meta name="description" content="Студио за дизайн на ресторантски менюта. Дизайн, снимки и QR дигитални менюта, които продават.">
@@ -24,6 +35,7 @@
     --red-2:#8c2921;
     --cream:#f0e7d3;
     --cream-dim:rgba(240,231,211,.62);
+    --on-brass:#0c0a07;
     --ease:cubic-bezier(.22,.9,.28,1);
   }
   *{margin:0;padding:0;box-sizing:border-box}
@@ -39,7 +51,7 @@
     -webkit-font-smoothing:antialiased;
     overflow-x:hidden;
   }
-  ::selection{background:var(--gold);color:var(--black)}
+  ::selection{background:var(--gold);color:var(--on-brass)}
   img{max-width:100%;display:block}
   h1,h2,h3,.serif{font-family:'Playfair Display',Georgia,serif}
 
@@ -100,6 +112,26 @@
   }
   .courses a:hover,.courses a:focus-visible{color:var(--gold-2);box-shadow:inset 0 0 0 1px var(--gold-faint)}
   .courses .dot{color:var(--gold-dim);font-size:10px}
+
+  /* theme switch */
+  .theme-switch{
+    position:relative;display:inline-flex;align-items:center;padding:3px;border-radius:999px;flex:none;
+    background:rgba(12,9,6,.55);box-shadow:inset 0 0 0 1px var(--gold-line);
+  }
+  .theme-switch button{
+    position:relative;z-index:1;width:32px;height:28px;border:none;background:none;cursor:pointer;border-radius:999px;
+    display:grid;place-items:center;color:var(--cream-dim);
+    transition:color .35s ease;
+  }
+  .theme-switch button[aria-pressed="true"]{color:var(--on-brass)}
+  .theme-switch button:focus-visible{outline:2px solid var(--gold-2);outline-offset:2px}
+  .theme-switch .ind{
+    position:absolute;left:3px;top:3px;width:32px;height:28px;border-radius:999px;z-index:0;
+    background:linear-gradient(135deg,#e6cf95,#8f7440 60%,#c9a961);
+    box-shadow:0 6px 16px -6px rgba(201,169,97,.75);
+    transition:transform .45s cubic-bezier(.34,1.4,.44,1);
+  }
+  .theme-switch[data-t="dark"] .ind{transform:translateX(32px)}
 
   /* ============ buttons ============ */
   .btn{
@@ -428,6 +460,54 @@
     *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
     .rv{opacity:1;transform:none}
   }
+
+  /* ============ LIGHT THEME ============ */
+  [data-theme="light"]{
+    --black:#F7F1E8;
+    --panel:#F7F1E8;
+    --card:#FFFDFC;
+    --gold:#C6A15B;
+    --gold-2:#a9884d;
+    --gold-dim:#a9884d;
+    --gold-line:rgba(198,161,91,.45);
+    --gold-faint:rgba(198,161,91,.22);
+    --red:#E94A3F;
+    --red-2:#f0685c;
+    --cream:#2B1B15;
+    --cream-dim:rgba(43,27,21,.62);
+    --on-brass:#2B1B15;
+  }
+  [data-theme="light"] body{
+    background:
+      radial-gradient(1200px 700px at 50% -10%,rgba(198,161,91,.08),transparent 60%),
+      radial-gradient(900px 600px at 90% 100%,rgba(233,74,63,.05),transparent 60%),
+      radial-gradient(1400px 900px at 50% 50%,#FFFDFC 0%,var(--black) 70%);
+  }
+  [data-theme="light"] nav::before{
+    background:linear-gradient(to bottom,rgba(247,241,232,.92),rgba(247,241,232,.78));
+  }
+  [data-theme="light"] .btn-gold{
+    background:linear-gradient(135deg,#f0685c,#E94A3F 60%,#ef5d51);
+    color:#FFFDFC;
+    box-shadow:0 10px 30px -10px rgba(233,74,63,.4),0 4px 12px -6px rgba(43,27,21,.15);
+  }
+  [data-theme="light"] .btn-ghost{background:#FFFDFC}
+  [data-theme="light"] h1,
+  [data-theme="light"] .course-head h2,
+  [data-theme="light"] #demo .band h2,
+  [data-theme="light"] #rezervacii h2{
+    background:linear-gradient(115deg,#b8843a,#8a6329 55%,#a9884d);
+    -webkit-background-clip:text;background-clip:text;
+  }
+  [data-theme="light"] #demo .band{
+    background:
+      radial-gradient(700px 380px at 12% 15%,rgba(198,161,91,.1),transparent 60%),
+      linear-gradient(160deg,#FFFDFC,#F7F1E8 60%,#FFFDFC);
+  }
+  [data-theme="light"] .field input,[data-theme="light"] .field textarea,[data-theme="light"] .field select{
+    background:#FFFDFC;
+  }
+  [data-theme="light"] footer .fine{color:rgba(43,27,21,.35)}
 </style>
 </head>
 <body>
@@ -449,7 +529,18 @@
       <li class="dot">•</li>
       <li><a href="#rezervacii">Резервации</a></li>
     </ul>
-    <a class="btn btn-gold magnetic" style="padding:12px 22px;font-size:12px" href="#demo">Безплатна демонстрация</a>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="theme-switch" id="themeSwitch" data-t="dark" role="group" aria-label="Theme">
+        <span class="ind" aria-hidden="true"></span>
+        <button type="button" data-theme-btn="light" aria-pressed="false" aria-label="Светла тема">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        </button>
+        <button type="button" data-theme-btn="dark" aria-pressed="true" aria-label="Тъмна тема">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </div>
+      <a class="btn btn-gold magnetic" style="padding:12px 22px;font-size:12px" href="#demo">Безплатна демонстрация</a>
+    </div>
   </div>
 </nav>
 
@@ -703,6 +794,32 @@
   const nav = document.getElementById('nav');
   const onScrollNav = () => nav.classList.toggle('scrolled', scrollY > 40);
   addEventListener('scroll', onScrollNav, {passive:true}); onScrollNav();
+
+  /* theme toggle */
+  const themeSwitch = document.getElementById('themeSwitch');
+  let theme = document.documentElement.getAttribute('data-theme') || 'dark';
+  const applyTheme = () => {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeSwitch.dataset.t = theme;
+    themeSwitch.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeBtn === theme)));
+  };
+  const setTheme = (val) => {
+    if (val === theme) return;
+    theme = val;
+    try { localStorage.setItem('mf-theme', val); } catch(e) {}
+    applyTheme();
+  };
+  themeSwitch.addEventListener('click', e => { const b = e.target.closest('[data-theme-btn]'); if (b) setTheme(b.dataset.themeBtn); });
+  applyTheme();
+  try {
+    if (localStorage.getItem('mf-theme') === null) {
+      matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
+        if (localStorage.getItem('mf-theme') !== null) return;
+        theme = e.matches ? 'light' : 'dark';
+        applyTheme();
+      });
+    }
+  } catch(e) {}
 
   /* reveal */
   const io = new IntersectionObserver(entries=>{
