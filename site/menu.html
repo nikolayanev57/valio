@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
   :root{
     --black:#0c0a07;
@@ -330,6 +331,7 @@
   form{display:grid;grid-template-columns:1fr 1fr;gap:20px}
   .field{display:flex;flex-direction:column;gap:8px}
   .field.full{grid-column:1/-1}
+  .cf-turnstile{grid-column:1/-1}
   .field label{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
   .field input,.field textarea,.field select{
     background:rgba(201,169,97,.05);
@@ -651,6 +653,7 @@
         <label for="f-msg">Съобщение</label>
         <textarea id="f-msg" name="message" placeholder="Разкажете ни за заведението и менюто, което искате."></textarea>
       </div>
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAAEnDCUZ_PizTAG69" data-theme="dark"></div>
       <div class="form-foot">
         <button class="btn btn-gold magnetic" type="submit">
           Изпрати запитване
@@ -847,6 +850,7 @@
             preferredStyle: form.preferredStyle.value,
             email: form.email.value,
             message: form.message.value,
+            turnstileToken: form['cf-turnstile-response']?.value || '',
           }),
         });
         if(!res.ok) throw new Error('request failed');
@@ -856,6 +860,7 @@
         formNote.textContent = 'Възникна грешка. Пишете ни в Instagram: @menuframe.studio.bg';
       }finally{
         submitBtn.disabled = false;
+        if(window.turnstile) window.turnstile.reset();
       }
     });
   })();

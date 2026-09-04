@@ -21,6 +21,24 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_SHORT = 200;
 const MAX_MESSAGE = 2000;
 
+async function verifyTurnstile(token, ip) {
+  const secret = process.env.TURNSTILE_SECRET_KEY;
+  if (!secret) {
+    console.warn("[turnstile] TURNSTILE_SECRET_KEY not set — skipping bot check.");
+    return true;
+  }
+  if (!token) return false;
+
+  const body = new URLSearchParams({ secret, response: token, remoteip: ip });
+  const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+  });
+  const result = await res.json();
+  return result.success === true;
+}
+
 function validateAndNormalize(body) {
   const clean = (v, max) => String(v ?? "").trim().slice(0, max);
 
@@ -153,6 +171,12 @@ module.exports = async function handler(req, res) {
   const { data, error } = validateAndNormalize(req.body || {});
   if (error) {
     res.status(400).json({ error });
+    return;
+  }
+
+  const humanVerified = await verifyTurnstile(req.body?.turnstileToken, ip);
+  if (!humanVerified) {
+    res.status(400).json({ error: "Bot verification failed" });
     return;
   }
 
