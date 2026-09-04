@@ -39,6 +39,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
   :root{
     --ink:#16120e;
@@ -695,6 +696,7 @@
   form{display:grid;grid-template-columns:1fr 1fr;gap:22px}
   .field{display:flex;flex-direction:column;gap:9px}
   .field.full{grid-column:1/-1}
+  .cf-turnstile{grid-column:1/-1}
   .field label{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--tx-dark-dim)}
   .field input,.field textarea,.field select{
     background:rgba(216,185,106,.045);
@@ -1165,6 +1167,7 @@
         <label for="f-msg" data-i18n="formMsg">Съобщение</label>
         <textarea id="f-msg" name="message" placeholder="Разкажете ни за заведението и менюто, което искате." data-i18n-placeholder="formMsgPh"></textarea>
       </div>
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAAEnDCUZ_PizTAG69" data-theme="dark"></div>
       <div class="form-foot">
         <button class="btn btn-gold magnetic" type="submit">
           <span data-i18n="formSubmit">Изпрати запитване</span>
@@ -1648,6 +1651,7 @@
           preferredStyle: form.preferredStyle.value,
           email: form.email.value,
           message: form.message.value,
+          turnstileToken: form['cf-turnstile-response']?.value || '',
         }),
       });
       if(!res.ok) throw new Error('request failed');
@@ -1657,6 +1661,7 @@
       formNote.textContent = t('formError');
     }finally{
       submitBtn.disabled = false;
+      if(window.turnstile) window.turnstile.reset();
     }
   });
 })();
